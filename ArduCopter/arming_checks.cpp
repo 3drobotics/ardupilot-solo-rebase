@@ -2,6 +2,20 @@
 
 #include "Copter.h"
 
+uint32_t Copter::get_ready_to_arm_mode_mask(void)
+{
+    uint32_t ret = 0;
+    uint8_t saved_control_mode = control_mode;
+    for (control_mode=0; control_mode < FLIGHT_MODE_MAX; control_mode++) {
+        if (is_valid_flight_mode(control_mode) && pre_arm_checks(false) && arm_checks(false,true)) {
+            ret |= 1UL << control_mode;
+        }
+    }
+
+    control_mode = saved_control_mode;
+    return ret;
+}
+
 // performs pre-arm checks. expects to be called at 1hz.
 void Copter::update_arming_checks(void)
 {
