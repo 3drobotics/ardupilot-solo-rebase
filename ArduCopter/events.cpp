@@ -184,6 +184,10 @@ void Copter::failsafe_gps_glitch_check() {
 }
 
 bool Copter::should_disarm_on_failsafe() {
+    if (ap.in_arming_delay) {
+        return true;
+    }
+
     switch(control_mode) {
         case STABILIZE:
         case ACRO:
