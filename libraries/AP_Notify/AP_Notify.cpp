@@ -42,7 +42,12 @@ struct AP_Notify::notify_events_type AP_Notify::events;
 #if CONFIG_HAL_BOARD == HAL_BOARD_PX4
     AP_BoardLED boardled;
     ToshibaLED_PX4 toshibaled;
+
+#ifdef SOLO_TONES_ENABLED
+    ToneAlarm_PX4_Solo tonealarm;
+#else
     ToneAlarm_PX4 tonealarm;
+#endif
 
 #ifdef OREOLED_ENABLED
     OreoLED_PX4 oreoled;
