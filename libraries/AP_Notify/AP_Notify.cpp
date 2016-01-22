@@ -43,13 +43,13 @@ struct AP_Notify::notify_events_type AP_Notify::events;
     AP_BoardLED boardled;
     ToshibaLED_PX4 toshibaled;
 
-#ifdef SOLO_TONES_ENABLED
+#ifdef AP_NOTIFY_SOLO_TONES_ENABLED
     ToneAlarm_PX4_Solo tonealarm;
 #else
     ToneAlarm_PX4 tonealarm;
 #endif
 
-#ifdef OREOLED_ENABLED
+#ifdef AP_NOTIFY_OREOLED_ENABLED
     OreoLED_PX4 oreoled;
     NotifyDevice *AP_Notify::_devices[] = {&boardled, &toshibaled, &tonealarm, &oreoled};
 #else
