@@ -26,6 +26,7 @@
 #include "ToshibaLED_I2C.h"
 #include "ToshibaLED_PX4.h"
 #include "ToneAlarm_PX4.h"
+#include "ToneAlarm_PX4_Solo.h"
 #include "ToneAlarm_Linux.h"
 #include "NavioLED_I2C.h"
 #include "ExternalLED.h"
