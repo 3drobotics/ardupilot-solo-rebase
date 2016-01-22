@@ -18,6 +18,9 @@
 #ifndef __AP_NOTIFY_H__
 #define __AP_NOTIFY_H__
 
+#define AP_NOTIFY_SOLO_TONES_ENABLED
+#define AP_NOTIFY_OREOLED_ENABLED
+
 #include <AP_Common/AP_Common.h>
 #include <GCS_MAVLink/GCS_MAVLink.h>
 #include <AP_Param/AP_Param.h>
