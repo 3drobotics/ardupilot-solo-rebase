@@ -36,10 +36,6 @@
 #include "Display.h"
 #include "Display_SSD1306_I2C.h"
 
-#ifndef OREOLED_ENABLED
- # define OREOLED_ENABLED   0   // set to 1 to enable OreoLEDs
-#endif
-
 // Device parameters values
 #define RGB_LED_OFF     0
 #define RGB_LED_LOW     1
