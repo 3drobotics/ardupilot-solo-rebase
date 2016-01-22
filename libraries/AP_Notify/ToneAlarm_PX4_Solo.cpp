@@ -305,7 +305,7 @@ void ToneAlarm_PX4_Solo::update()
     // check if battery status has changed
     if (flags.failsafe_battery != AP_Notify::flags.failsafe_battery) {
         flags.failsafe_battery = AP_Notify::flags.failsafe_battery;
-        if (flags.failsafe_battery) {
+        if (flags.failsafe_battery && !flags.armed) {
             // battery warning tune
             play_tone(AP_NOTIFY_PX4_TONE_LOUD_BATTERY_ALERT_CTS);
         }
