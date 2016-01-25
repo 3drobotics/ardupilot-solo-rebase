@@ -7,7 +7,7 @@
  */
 
 // sport_init - initialise sport controller
-bool Copter::sport_init(bool ignore_checks)
+bool Copter::sport_init(mode_reason_t reason, bool ignore_checks)
 {
     // initialize vertical speed and acceleration
     pos_control.set_speed_z(-g.pilot_velocity_z_max, g.pilot_velocity_z_max);
