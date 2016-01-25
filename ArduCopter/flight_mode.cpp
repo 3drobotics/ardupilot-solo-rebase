@@ -11,7 +11,7 @@
 // optional force parameter used to force the flight mode change (used only first time mode is set)
 // returns true if mode was succesfully set
 // ACRO, STABILIZE, ALTHOLD, LAND, DRIFT and SPORT can always be set successfully but the return state of other flight modes should be checked and the caller should deal with failures appropriately
-bool Copter::set_mode(control_mode_t mode)
+bool Copter::set_mode(control_mode_t mode, mode_reason_t reason)
 {
     // boolean to record if flight mode could be set
     bool success = false;
@@ -19,80 +19,81 @@ bool Copter::set_mode(control_mode_t mode)
 
     // return immediately if we are already in the desired mode
     if (mode == control_mode) {
+        control_mode_reason = reason;
         return true;
     }
 
     switch(mode) {
         case ACRO:
             #if FRAME_CONFIG == HELI_FRAME
-                success = heli_acro_init(ignore_checks);
+                success = heli_acro_init(reason, ignore_checks);
             #else
-                success = acro_init(ignore_checks);
+                success = acro_init(reason, ignore_checks);
             #endif
             break;
 
         case STABILIZE:
             #if FRAME_CONFIG == HELI_FRAME
-                success = heli_stabilize_init(ignore_checks);
+                success = heli_stabilize_init(reason, ignore_checks);
             #else
-                success = stabilize_init(ignore_checks);
+                success = stabilize_init(reason, ignore_checks);
             #endif
             break;
 
         case ALT_HOLD:
-            success = althold_init(ignore_checks);
+            success = althold_init(reason, ignore_checks);
             break;
 
         case AUTO:
-            success = auto_init(ignore_checks);
+            success = auto_init(reason, ignore_checks);
             break;
 
         case CIRCLE:
-            success = circle_init(ignore_checks);
+            success = circle_init(reason, ignore_checks);
             break;
 
         case LOITER:
-            success = loiter_init(ignore_checks);
+            success = loiter_init(reason, ignore_checks);
             break;
 
         case GUIDED:
-            success = guided_init(ignore_checks);
+            success = guided_init(reason, ignore_checks);
             break;
 
         case LAND:
-            success = land_init(ignore_checks);
+            success = land_init(reason, ignore_checks);
             break;
 
         case RTL:
-            success = rtl_init(ignore_checks);
+            success = rtl_init(reason, ignore_checks);
             break;
 
         case DRIFT:
-            success = drift_init(ignore_checks);
+            success = drift_init(reason, ignore_checks);
             break;
 
         case SPORT:
-            success = sport_init(ignore_checks);
+            success = sport_init(reason, ignore_checks);
             break;
 
         case FLIP:
-            success = flip_init(ignore_checks);
+            success = flip_init(reason, ignore_checks);
             break;
 
 #if AUTOTUNE_ENABLED == ENABLED
         case AUTOTUNE:
-            success = autotune_init(ignore_checks);
+            success = autotune_init(reason, ignore_checks);
             break;
 #endif
 
 #if POSHOLD_ENABLED == ENABLED
         case POSHOLD:
-            success = poshold_init(ignore_checks);
+            success = poshold_init(reason, ignore_checks);
             break;
 #endif
 
         case BRAKE:
-            success = brake_init(ignore_checks);
+            success = brake_init(reason, ignore_checks);
             break;
 
         default:
@@ -105,6 +106,7 @@ bool Copter::set_mode(control_mode_t mode)
         // perform any cleanup required by previous flight mode
         exit_mode(control_mode, (control_mode_t)mode);
         control_mode = (control_mode_t)mode;
+        control_mode_reason = reason;
         DataFlash.Log_Write_Mode(control_mode);
 
 #if AC_FENCE == ENABLED

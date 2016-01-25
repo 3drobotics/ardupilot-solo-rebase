@@ -10,7 +10,7 @@
  */
 
 // rtl_init - initialise rtl controller
-bool Copter::rtl_init(bool ignore_checks)
+bool Copter::rtl_init(mode_reason_t reason, bool ignore_checks)
 {
     if (position_ok() || ignore_checks) {
         rtl_build_path();
@@ -270,8 +270,8 @@ void Copter::rtl_descent_run()
         if ((g.throttle_behavior & THR_BEHAVE_HIGH_THROTTLE_CANCELS_LAND) != 0 && rc_throttle_control_in_filter.get() > LAND_CANCEL_TRIGGER_THR){
             Log_Write_Event(DATA_LAND_CANCELLED_BY_PILOT);
             // exit land if throttle is high
-            if (!set_mode(LOITER)) {
-                set_mode(ALT_HOLD);
+            if (!set_mode(LOITER, MODE_REASON_THROTTLE_LAND_ESCAPE)) {
+                set_mode(ALT_HOLD, MODE_REASON_THROTTLE_LAND_ESCAPE);
             }
         }
 
@@ -366,8 +366,8 @@ void Copter::rtl_land_run()
         if ((g.throttle_behavior & THR_BEHAVE_HIGH_THROTTLE_CANCELS_LAND) != 0 && rc_throttle_control_in_filter.get() > LAND_CANCEL_TRIGGER_THR){
             Log_Write_Event(DATA_LAND_CANCELLED_BY_PILOT);
             // exit land if throttle is high
-            if (!set_mode(LOITER)) {
-                set_mode(ALT_HOLD);
+            if (!set_mode(LOITER, MODE_REASON_THROTTLE_LAND_ESCAPE)) {
+                set_mode(ALT_HOLD, MODE_REASON_THROTTLE_LAND_ESCAPE);
             }
         }
 

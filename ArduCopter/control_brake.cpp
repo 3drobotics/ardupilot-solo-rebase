@@ -7,7 +7,7 @@
  */
 
 // brake_init - initialise brake controller
-bool Copter::brake_init(bool ignore_checks)
+bool Copter::brake_init(mode_reason_t reason, bool ignore_checks)
 {
     if (position_ok() || ignore_checks) {
 
