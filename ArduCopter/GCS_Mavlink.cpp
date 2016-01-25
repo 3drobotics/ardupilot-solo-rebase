@@ -58,6 +58,8 @@ NOINLINE void Copter::send_heartbeat(mavlink_channel_t chan)
         // APM does in any mode, as that is defined as "system finds its own goal
         // positions", which APM does not currently do
         break;
+    default:
+        break;
     }
 
     // all modes except INITIALISING have some form of manual
@@ -173,6 +175,8 @@ NOINLINE void Copter::send_extended_status1(mavlink_channel_t chan)
         break;
     case SPORT:
         control_sensors_enabled |= MAV_SYS_STATUS_SENSOR_Z_ALTITUDE_CONTROL;
+        break;
+    default:
         break;
     }
 
@@ -1020,13 +1024,13 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg)
     {
 #ifdef DISALLOW_GCS_MODE_CHANGE_DURING_RC_FAILSAFE
         if (!copter.failsafe.radio) {
-            handle_set_mode(msg, FUNCTOR_BIND(&copter, &Copter::set_mode, bool, uint8_t));
+            handle_set_mode(msg, FUNCTOR_BIND(&copter, &Copter::gcs_set_mode, bool, uint8_t));
         } else {
             // don't allow mode changes while in radio failsafe
             mavlink_msg_command_ack_send_buf(msg, chan, MAVLINK_MSG_ID_SET_MODE, MAV_RESULT_FAILED);
         }
 #else
-        handle_set_mode(msg, FUNCTOR_BIND(&copter, &Copter::set_mode, bool, uint8_t));
+        handle_set_mode(msg, FUNCTOR_BIND(&copter, &Copter::gcs_set_mode, bool, uint8_t));
 #endif
         break;
     }
