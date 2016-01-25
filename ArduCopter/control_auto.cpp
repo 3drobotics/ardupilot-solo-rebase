@@ -20,7 +20,7 @@
  */
 
 // auto_init - initialise auto controller
-bool Copter::auto_init(bool ignore_checks)
+bool Copter::auto_init(mode_reason_t reason, bool ignore_checks)
 {
     if ((position_ok() && mission.num_commands() > 1) || ignore_checks) {
         auto_mode = Auto_Loiter;
@@ -327,8 +327,8 @@ void Copter::auto_land_run()
         if ((g.throttle_behavior & THR_BEHAVE_HIGH_THROTTLE_CANCELS_LAND) != 0 && rc_throttle_control_in_filter.get() > LAND_CANCEL_TRIGGER_THR){
             Log_Write_Event(DATA_LAND_CANCELLED_BY_PILOT);
             // exit land if throttle is high
-            if (!set_mode(LOITER)) {
-                set_mode(ALT_HOLD);
+            if (!set_mode(LOITER, MODE_REASON_THROTTLE_LAND_ESCAPE)) {
+                set_mode(ALT_HOLD, MODE_REASON_THROTTLE_LAND_ESCAPE);
             }
         }
 
@@ -369,7 +369,7 @@ void Copter::auto_rtl_start()
     auto_mode = Auto_RTL;
 
     // call regular rtl flight mode initialisation and ask it to ignore checks
-    rtl_init(true);
+    rtl_init(MODE_REASON_UNKNOWN, true);
 }
 
 // auto_rtl_run - rtl in AUTO flight mode
@@ -438,7 +438,7 @@ void Copter::auto_nav_guided_start()
     auto_mode = Auto_NavGuided;
 
     // call regular guided flight mode initialisation
-    guided_init(true);
+    guided_init(MODE_REASON_UNKNOWN, true);
 
     // initialise guided start time and position as reference for limit checking
     guided_limit_init_time_and_pos();

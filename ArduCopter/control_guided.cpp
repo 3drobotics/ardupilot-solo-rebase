@@ -36,7 +36,7 @@ struct Guided_Limit {
 } guided_limit;
 
 // guided_init - initialise guided controller
-bool Copter::guided_init(bool ignore_checks)
+bool Copter::guided_init(mode_reason_t reason, bool ignore_checks)
 {
     if (position_ok() || ignore_checks) {
         // initialise yaw

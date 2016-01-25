@@ -247,6 +247,7 @@ private:
     // This is the state of the flight control system
     // There are multiple states defined such as STABILIZE, ACRO,
     control_mode_t control_mode;
+    mode_reason_t control_mode_reason;
 
     // Structure used to detect changes in the flight mode control switch
     struct {
@@ -699,12 +700,12 @@ private:
     void log_picture();
     uint8_t mavlink_compassmot(mavlink_channel_t chan);
     void delay(uint32_t ms);
-    bool acro_init(bool ignore_checks);
+    bool acro_init(mode_reason_t reason, bool ignore_checks);
     void acro_run();
     void get_pilot_desired_angle_rates(int16_t roll_in, int16_t pitch_in, int16_t yaw_in, float &roll_out, float &pitch_out, float &yaw_out);
-    bool althold_init(bool ignore_checks);
+    bool althold_init(mode_reason_t reason, bool ignore_checks);
     void althold_run();
-    bool auto_init(bool ignore_checks);
+    bool auto_init(mode_reason_t reason, bool ignore_checks);
     void auto_run();
     void auto_takeoff_start(float final_alt_above_home);
     void auto_takeoff_run();
@@ -728,7 +729,7 @@ private:
     void set_auto_yaw_look_at_heading(float angle_deg, float turn_rate_dps, int8_t direction, uint8_t relative_angle);
     void set_auto_yaw_roi(const Location &roi_location);
     float get_auto_heading(void);
-    bool autotune_init(bool ignore_checks);
+    bool autotune_init(mode_reason_t reason, bool ignore_checks);
     void autotune_stop();
     bool autotune_start(bool ignore_checks);
     void autotune_run();
@@ -752,16 +753,16 @@ private:
     void autotune_twitching_measure_acceleration(float &rate_of_change, float rate_measurement, float &rate_measurement_max);
     void adsb_update(void);
     void adsb_handle_vehicle_threats(void);
-    bool brake_init(bool ignore_checks);
+    bool brake_init(mode_reason_t reason, bool ignore_checks);
     void brake_run();
-    bool circle_init(bool ignore_checks);
+    bool circle_init(mode_reason_t reason, bool ignore_checks);
     void circle_run();
-    bool drift_init(bool ignore_checks);
+    bool drift_init(mode_reason_t reason, bool ignore_checks);
     void drift_run();
     int16_t get_throttle_assist(float velz, int16_t pilot_throttle_scaled);
-    bool flip_init(bool ignore_checks);
+    bool flip_init(mode_reason_t reason, bool ignore_checks);
     void flip_run();
-    bool guided_init(bool ignore_checks);
+    bool guided_init(mode_reason_t reason, bool ignore_checks);
     void guided_takeoff_start(float final_alt_above_home);
     void guided_pos_control_start();
     void guided_vel_control_start();
@@ -781,17 +782,16 @@ private:
     void guided_limit_set(uint32_t timeout_ms, float alt_min_cm, float alt_max_cm, float horiz_max_cm);
     void guided_limit_init_time_and_pos();
     bool guided_limit_check();
-    bool land_init(bool ignore_checks);
+    bool land_init(mode_reason_t reason, bool ignore_checks);
     void land_run();
     void land_gps_run();
     void land_nogps_run();
     float get_land_descent_speed();
     void land_do_not_use_GPS();
-    void set_mode_land_with_pause();
     bool landing_with_GPS();
-    bool loiter_init(bool ignore_checks);
+    bool loiter_init(mode_reason_t reason, bool ignore_checks);
     void loiter_run();
-    bool poshold_init(bool ignore_checks);
+    bool poshold_init(mode_reason_t reason, bool ignore_checks);
     void poshold_run();
     void poshold_update_pilot_lean_angle(float &lean_angle_filtered, float &lean_angle_raw);
     int16_t poshold_mix_controls(float mix_ratio, int16_t first_control, int16_t second_control);
@@ -801,7 +801,7 @@ private:
     void poshold_roll_controller_to_pilot_override();
     void poshold_pitch_controller_to_pilot_override();
 
-    bool rtl_init(bool ignore_checks);
+    bool rtl_init(mode_reason_t reason, bool ignore_checks);
     void rtl_run();
     void rtl_climb_start();
     void rtl_return_start();
@@ -814,9 +814,9 @@ private:
     void rtl_land_run();
     void rtl_build_path();
     float rtl_compute_return_alt_above_origin(float rtl_return_dist);
-    bool sport_init(bool ignore_checks);
+    bool sport_init(mode_reason_t reason, bool ignore_checks);
     void sport_run();
-    bool stabilize_init(bool ignore_checks);
+    bool stabilize_init(mode_reason_t reason, bool ignore_checks);
     void stabilize_run();
     void crash_check();
     void parachute_check();
@@ -835,14 +835,13 @@ private:
     void failsafe_battery_event(void);
     void failsafe_gcs_check();
     void failsafe_gcs_off_event(void);
-    void set_mode_RTL_or_land_with_pause();
     void update_events();
     void failsafe_enable();
     void failsafe_disable();
     void fence_check();
     void fence_send_mavlink_status(mavlink_channel_t chan);
-    bool set_mode(control_mode_t mode);
-    bool gcs_set_mode(uint8_t mode) { return set_mode((control_mode_t)mode); }
+    bool set_mode(control_mode_t mode, mode_reason_t reason);
+    bool gcs_set_mode(uint8_t mode) { return set_mode((control_mode_t)mode, MODE_REASON_GCS_COMMAND); }
     void update_flight_mode();
     void exit_mode(control_mode_t old_control_mode, control_mode_t new_control_mode);
     bool mode_requires_GPS(control_mode_t mode);
@@ -855,9 +854,9 @@ private:
     void heli_update_landing_swash();
     void heli_update_rotor_speed_targets();
     void heli_radio_passthrough();
-    bool heli_acro_init(bool ignore_checks);
+    bool heli_acro_init(mode_reason_t reason, bool ignore_checks);
     void heli_acro_run();
-    bool heli_stabilize_init(bool ignore_checks);
+    bool heli_stabilize_init(mode_reason_t reason, bool ignore_checks);
     void heli_stabilize_run();
     void read_inertia();
     void read_inertial_altitude();

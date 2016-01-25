@@ -29,7 +29,7 @@
 #endif
 
 // drift_init - initialise drift controller
-bool Copter::drift_init(bool ignore_checks)
+bool Copter::drift_init(mode_reason_t reason, bool ignore_checks)
 {
     if (position_ok() || ignore_checks) {
         return true;
