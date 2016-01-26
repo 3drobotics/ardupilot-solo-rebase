@@ -37,6 +37,14 @@
 #include "Display.h"
 #include "Display_SSD1306_I2C.h"
 
+#ifndef AP_NOTIFY_OREOLED
+#define AP_NOTIFY_OREOLED 0
+#endif
+
+#ifndef AP_NOTIFY_SOLO_TONES
+#define AP_NOTIFY_SOLO_TONES 0
+#endif
+
 // Device parameters values
 #define RGB_LED_OFF     0
 #define RGB_LED_LOW     1
