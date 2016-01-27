@@ -34,6 +34,12 @@ void Copter::update_arming_checks(void)
     if (pre_arm_checks(display_fail)) {
         set_pre_arm_check(true);
     }
+
+    if (display_fail && ap.pre_arm_check) {
+        // pre-arm checks have passed, run arming checks in order to display failures
+        // this is a HACK that allows the GCS to display arming failures without attempting to arm
+        arm_checks(true,true);
+    }
 }
 
 // performs pre-arm checks and arming checks
