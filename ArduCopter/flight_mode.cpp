@@ -240,6 +240,9 @@ void Copter::update_flight_mode()
         case BRAKE:
             brake_run();
             break;
+
+        default:
+            break;
     }
 }
 
