@@ -78,7 +78,7 @@ static struct {
 bool Copter::poshold_init(mode_reason_t reason, bool ignore_checks)
 {
     // fail to initialise PosHold mode if no GPS lock
-    if (!position_ok() && !ignore_checks) {
+    if (!(position_ok() && !failsafe.gps_glitch) && !ignore_checks) {
         return false;
     }
     

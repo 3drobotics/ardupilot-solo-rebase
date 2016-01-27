@@ -31,7 +31,7 @@
 // drift_init - initialise drift controller
 bool Copter::drift_init(mode_reason_t reason, bool ignore_checks)
 {
-    if (position_ok() || ignore_checks) {
+    if ((position_ok() && !failsafe.gps_glitch) || ignore_checks) {
         return true;
     }else{
         return false;
