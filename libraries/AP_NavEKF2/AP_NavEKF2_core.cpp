@@ -250,6 +250,8 @@ void NavEKF2_core::InitialiseVariables()
     runUpdates = false;
     framesSincePredict = 0;
     lastMagOffsetsValid = false;
+    yawAtTakeoff = 0.0f;
+    posdAtLastYawReset = 0.0f;
 
     // zero data buffers
     storedIMU.reset();
