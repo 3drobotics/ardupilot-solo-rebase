@@ -62,9 +62,9 @@ void NavEKF2_core::setWindMagStateLearningMode()
             ((frontend->_magCal == 3) && firstMagYawInit) || // when initial in-air yaw and field reset has completed
             (frontend->_magCal == 4); // all the time
 
-    // Deny mag calibration request if we aren't using the compass, it has been inhibited by the user,
-    // we do not have an absolute position reference or are on the ground (unless explicitly requested by the user)
-    bool magCalDenied = !use_compass() || (frontend->_magCal == 2) ||(onGround && frontend->_magCal != 4);
+    // Determine if the request to do magnetometer calibration should be denied
+    bool magCalDenied = !use_compass() || // if there is no compass to use
+            ((onGround || getTouchdownExpected()) && frontend->_magCal != 4); // if magnetic interference is likely (unless specifically requested by the user)
 
     // Inhibit the magnetic field calibration if not requested or denied
     inhibitMagStates = (!magCalRequested || magCalDenied);
