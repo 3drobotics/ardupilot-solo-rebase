@@ -30,7 +30,7 @@ void NavEKF2_core::controlMagYawReset()
 
     // sample the yaw angle before we takeoff
     if (onGround) {
-        yawAtTakeoff = atan2f(prevTnb.a.y,prevTnb.a.x);
+        referenceYawAngle = atan2f(prevTnb.a.y,prevTnb.a.x);
         posdAtLastYawReset = stateStruct.position.z;
     }
 
@@ -43,7 +43,7 @@ void NavEKF2_core::controlMagYawReset()
         bool hgtCheckPassed = (stateStruct.position.z  - posDownAtTakeoff) < -5.0f;
 
         // Calculate the ratio of yaw change to max allowed innovation
-        float yawChange = wrap_PI(atan2f(prevTnb.a.y,prevTnb.a.x) - yawAtTakeoff);
+        float yawChange = wrap_PI(atan2f(prevTnb.a.y,prevTnb.a.x) - referenceYawAngle);
         float yawChangeRatio = sq(yawChange) / (sq(MAX(0.01f * (float)frontend->_yawInnovGate, 1.0f)) * sq(fmaxf(frontend->_yawNoise,0.01f)));
 
         // A combination of large yaw innovation, increasing height and lack of significant yaw angle change from takeoff is
@@ -64,14 +64,14 @@ void NavEKF2_core::controlMagYawReset()
 
             // Update the reference yaw angle and reset reference data
             stateStruct.quat.to_euler(eulerAngles.x, eulerAngles.y, eulerAngles.z);
-            yawAtTakeoff = eulerAngles.z;
+            referenceYawAngle = eulerAngles.z;
             posdAtLastYawReset = stateStruct.position.z;
 
             // calculate the change in the quaternion state and apply it to the ouput history buffer
             tempQuat = stateStruct.quat/tempQuat;
             StoreQuatRotate(tempQuat);
 
-            //Lock out further resets when we
+            // Lock out further resets when we have achieved the required height
             if (hgtCheckPassed) {
                 firstMagYawInit = true;
             }

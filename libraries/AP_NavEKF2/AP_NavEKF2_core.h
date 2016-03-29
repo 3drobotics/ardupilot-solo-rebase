@@ -775,8 +775,8 @@ private:
     uint32_t framesSincePredict;    // number of frames lapsed since EKF instance did a state prediction
     bool startPredictEnabled;       // boolean true when the frontend has given permission to start a new state prediciton cycele
     uint8_t localFilterTimeStep_ms; // average number of msec between filter updates
-    float posDownObsNoise;          // observationn noise on the vertical position used by the state and covariance update step (m)
-    float yawAtTakeoff;             // Euler yaw angle measured at takeoff (rad)
+    float posDownObsNoise;          // observation noise on the vertical position used by the state and covariance update step (m)
+    float referenceYawAngle;        // Euler yaw angle measured at takeoff and after a yaw reset (rad)
     float posdAtLastYawReset;       // Verticl position at last height reset (m)
 
     // variables used to calulate a vertical velocity that is kinematically consistent with the verical position
