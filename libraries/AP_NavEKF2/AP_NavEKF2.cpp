@@ -429,20 +429,20 @@ const AP_Param::GroupInfo NavEKF2::var_info[] = {
 
     // @Param: YAW_NOISE
     // @DisplayName: Magnetomeer yaw measurement noise (rad)
-    // @Description: This is the RMS value of noise in the magnetometer yaw measurement which is used instead of 3-axis magnetometer observations if magnetic field learning is disabled. Increasing it reduces the weighting on the yaw measurement.
+    // @Description: This is the RMS value of noise in the magnetometer yaw measurement which is used instead of 3-axis magnetometer observations if magnetic field learning is disabled. Increasing it reduces the weighting on the yaw measurement. This parameter is only used inflight.
     // @Range: 0.1 0.5
     // @Increment: 0.01
     // @User: Advanced
     // @Units: rad
-    AP_GROUPINFO("YAW_NOISE", 36, NavEKF2, _yawNoise, 0.25f),
+    AP_GROUPINFO("YAW_NOISE", 36, NavEKF2, _yawNoise, 1.0f),
 
     // @Param: YAW_GATE
     // @DisplayName: Magnetometer yaw measurement gate size
-    // @Description: This sets the percentage number of standard deviations applied to the magnetometer yaw measurement innovation consistency check. Decreasing it makes it more likely that good measurements will be rejected. Increasing it makes it more likely that bad measurements will be accepted.
+    // @Description: This sets the percentage number of standard deviations applied to the magnetometer yaw measurement innovation consistency check. Decreasing it makes it more likely that good measurements will be rejected. Increasing it makes it more likely that bad measurements will be accepted. This parameter is only used inflight.
     // @Range: 100 1000
     // @Increment: 25
     // @User: Advanced
-    AP_GROUPINFO("YAW_GATE", 37, NavEKF2, _yawInnovGate, 300),
+    AP_GROUPINFO("YAW_GATE", 37, NavEKF2, _yawInnovGate, 100),
 
     AP_GROUPEND
 };
