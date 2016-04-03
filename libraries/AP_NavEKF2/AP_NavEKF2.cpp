@@ -14,28 +14,28 @@
  */
 #if APM_BUILD_TYPE(APM_BUILD_ArduCopter)
 // copter defaults
-#define VELNE_NOISE_DEFAULT     0.5f
-#define VELD_NOISE_DEFAULT      0.7f
-#define POSNE_NOISE_DEFAULT     0.5f
-#define ALT_NOISE_DEFAULT       2.0f
-#define MAG_NOISE_DEFAULT       0.05f
-#define GYRO_PNOISE_DEFAULT     0.025f
-#define ACC_PNOISE_DEFAULT      0.25f
-#define GBIAS_PNOISE_DEFAULT    1.75E-06f
-#define ABIAS_PNOISE_DEFAULT    3.0E-05f
-#define MAG_BODY_PNOISE_DEFAULT 2.5E-03f
+#define VELNE_NOISE_DEFAULT      0.5f
+#define VELD_NOISE_DEFAULT       0.7f
+#define POSNE_NOISE_DEFAULT      0.5f
+#define ALT_NOISE_DEFAULT        2.0f
+#define MAG_NOISE_DEFAULT        0.05f
+#define GYRO_PNOISE_DEFAULT      0.025f
+#define ACC_PNOISE_DEFAULT       0.25f
+#define GBIAS_PNOISE_DEFAULT     1.75E-06f
+#define ABIAS_PNOISE_DEFAULT     3.0E-05f
+#define MAG_BODY_PNOISE_DEFAULT  2.5E-03f
 #define MAG_EARTH_PNOISE_DEFAULT 2.5E-03f
-#define VEL_GATE_DEFAULT        300
-#define POS_GATE_DEFAULT        300
-#define HGT_GATE_DEFAULT        300
-#define MAG_GATE_DEFAULT        300
-#define MAG_CAL_DEFAULT         3
-#define GLITCH_RADIUS_DEFAULT   25
-#define FLOW_MEAS_DELAY         10
-#define FLOW_NOISE_DEFAULT      0.25f
-#define FLOW_GATE_DEFAULT       300
-#define GSCALE_PNOISE_DEFAULT   3.0E-04f
-#define CHECK_SCALER_DEFAULT    100
+#define VEL_GATE_DEFAULT         300
+#define POS_GATE_DEFAULT         300
+#define HGT_GATE_DEFAULT         300
+#define MAG_GATE_DEFAULT         300
+#define MAG_CAL_DEFAULT          3
+#define GLITCH_RADIUS_DEFAULT    25
+#define FLOW_MEAS_DELAY          10
+#define FLOW_NOISE_DEFAULT       0.25f
+#define FLOW_GATE_DEFAULT        300
+#define GSCALE_PNOISE_DEFAULT    3.0E-04f
+#define CHECK_SCALER_DEFAULT     100
 
 #elif APM_BUILD_TYPE(APM_BUILD_APMrover2)
 // rover defaults
