@@ -16,15 +16,15 @@
 // copter defaults
 #define VELNE_NOISE_DEFAULT     0.5f
 #define VELD_NOISE_DEFAULT      0.7f
-#define POSNE_NOISE_DEFAULT     1.0f
-#define ALT_NOISE_DEFAULT       5.0f
+#define POSNE_NOISE_DEFAULT     0.5f
+#define ALT_NOISE_DEFAULT       2.0f
 #define MAG_NOISE_DEFAULT       0.05f
-#define GYRO_PNOISE_DEFAULT     0.001f
+#define GYRO_PNOISE_DEFAULT     0.025f
 #define ACC_PNOISE_DEFAULT      0.25f
-#define GBIAS_PNOISE_DEFAULT    7.0E-05f
-#define ABIAS_PNOISE_DEFAULT    1.0E-04f
-#define MAG_PNOISE_DEFAULT      2.5E-02f
-#define VEL_GATE_DEFAULT        200
+#define GBIAS_PNOISE_DEFAULT    1.75E-06f
+#define ABIAS_PNOISE_DEFAULT    3.0E-05f
+#define MAG_PNOISE_DEFAULT      2.5E-03f
+#define VEL_GATE_DEFAULT        300
 #define POS_GATE_DEFAULT        300
 #define HGT_GATE_DEFAULT        300
 #define MAG_GATE_DEFAULT        300
@@ -33,7 +33,7 @@
 #define FLOW_MEAS_DELAY         10
 #define FLOW_NOISE_DEFAULT      0.25f
 #define FLOW_GATE_DEFAULT       300
-#define GSCALE_PNOISE_DEFAULT   3.0E-03f
+#define GSCALE_PNOISE_DEFAULT   3.0E-04f
 #define CHECK_SCALER_DEFAULT    100
 
 #elif APM_BUILD_TYPE(APM_BUILD_APMrover2)
@@ -434,7 +434,7 @@ const AP_Param::GroupInfo NavEKF2::var_info[] = {
     // @Increment: 0.01
     // @User: Advanced
     // @Units: rad
-    AP_GROUPINFO("YAW_NOISE", 36, NavEKF2, _yawNoise, 1.0f),
+    AP_GROUPINFO("YAW_NOISE", 36, NavEKF2, _yawNoise, 0.3f),
 
     // @Param: YAW_GATE
     // @DisplayName: Magnetometer yaw measurement gate size
@@ -442,7 +442,7 @@ const AP_Param::GroupInfo NavEKF2::var_info[] = {
     // @Range: 100 1000
     // @Increment: 25
     // @User: Advanced
-    AP_GROUPINFO("YAW_GATE", 37, NavEKF2, _yawInnovGate, 100),
+    AP_GROUPINFO("YAW_GATE", 37, NavEKF2, _yawInnovGate, 260),
 
     AP_GROUPEND
 };
