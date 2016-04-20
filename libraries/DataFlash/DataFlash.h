@@ -6,6 +6,9 @@
 #ifndef DataFlash_h
 #define DataFlash_h
 
+// maximum number of dynamic Log_Write formats supported
+#define MAX_LOG_WRITE_FMT_COUNT 5
+
 #include <AP_HAL/AP_HAL.h>
 #include <AP_Common/AP_Common.h>
 #include <AP_Param/AP_Param.h>
@@ -140,6 +143,8 @@ public:
                                const AP_Mission::Mission_Command &cmd);
     void Log_Write_Origin(uint8_t origin_type, const Location &loc);
     void Log_Write_RPM(const AP_RPM &rpm_sensor);
+
+    void Log_Write(const char *name, const char *labels, const char *fmt, ...);
 
     // This structure provides information on the internal member data of a PID for logging purposes
     struct PID_Info {
