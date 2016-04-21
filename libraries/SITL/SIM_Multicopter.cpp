@@ -37,6 +37,7 @@ MultiCopter::MultiCopter(const char *home_str, const char *frame_str) :
     frame_height = 0.1;
 }
 
+// calculate rotational and linear accelerations
 void MultiCopter::calculate_forces(const struct sitl_input &input, Vector3f &rot_accel, Vector3f &body_accel)
 {
     frame->calculate_forces(*this, input, rot_accel, body_accel);
