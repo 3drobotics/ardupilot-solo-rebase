@@ -20,61 +20,10 @@
 #pragma once
 
 #include "SIM_Aircraft.h"
+#include "SIM_Motor.h"
+#include "SIM_Frame.h"
 
-namespace SITL {
-
-/*
-  class to describe a motor position
- */
-class Motor {
-public:
-    float angle;
-    float yaw_factor;
-    uint8_t servo;
-    uint8_t display_order;
-
-    Motor(uint8_t _servo, float _angle, float _yaw_factor, uint8_t _display_order) :
-        servo(_servo), // what servo output drives this motor
-        angle(_angle), // angle in degrees from front
-        yaw_factor(_yaw_factor), // positive is clockwise
-        display_order(_display_order) // order for clockwise display
-    {}
-};
-
-/*
-  class to describe a multicopter frame type
- */
-class Frame {
-public:
-    const char *name;
-    uint8_t num_motors;
-    const Motor *motors;
-
-    Frame(const char *_name,
-          uint8_t _num_motors,
-          const Motor *_motors) :
-        name(_name),
-        num_motors(_num_motors),
-        motors(_motors) {}
-
-
-    // find a frame by name
-    static Frame *find_frame(const char *name);
-    
-    // initialise frame
-    void init(float mass, float hover_throttle, float terminal_velocity, float terminal_rotation_rate);
-
-    // calculate rotational and linear accelerations
-    void calculate_forces(const Aircraft &aircraft,
-                          const Aircraft::sitl_input &input,
-                          Vector3f &rot_accel, Vector3f &body_accel);
-    
-    float terminal_velocity;
-    float terminal_rotation_rate;
-    float thrust_scale;
-    float mass;
-    uint8_t motor_offset;
-};
+using namespace SITL;
 
 /*
   a multicopter simulator
@@ -97,4 +46,3 @@ protected:
     Frame *frame;
 };
 
-} // namespace SITL
