@@ -20,26 +20,9 @@
 #pragma once
 
 #include "SIM_Aircraft.h"
+#include "SIM_Motor.h"
 
-namespace SITL {
-
-/*
-  class to describe a motor position
- */
-class Motor {
-public:
-    float angle;
-    float yaw_factor;
-    uint8_t servo;
-    uint8_t display_order;
-
-    Motor(uint8_t _servo, float _angle, float _yaw_factor, uint8_t _display_order) :
-        servo(_servo), // what servo output drives this motor
-        angle(_angle), // angle in degrees from front
-        yaw_factor(_yaw_factor), // positive is clockwise
-        display_order(_display_order) // order for clockwise display
-    {}
-};
+using namespace SITL;
 
 /*
   class to describe a multicopter frame type
@@ -75,26 +58,3 @@ public:
     float mass;
     uint8_t motor_offset;
 };
-
-/*
-  a multicopter simulator
- */
-class MultiCopter : public Aircraft {
-public:
-    MultiCopter(const char *home_str, const char *frame_str);
-
-    /* update model by one time step */
-    void update(const struct sitl_input &input);
-
-    /* static object creator */
-    static Aircraft *create(const char *home_str, const char *frame_str) {
-        return new MultiCopter(home_str, frame_str);
-    }
-
-protected:
-    // calculate rotational and linear accelerations
-    void calculate_forces(const struct sitl_input &input, Vector3f &rot_accel, Vector3f &body_accel);
-    Frame *frame;
-};
-
-} // namespace SITL
