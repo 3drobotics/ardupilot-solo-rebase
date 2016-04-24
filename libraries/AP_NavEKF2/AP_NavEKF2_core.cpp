@@ -252,6 +252,9 @@ void NavEKF2_core::InitialiseVariables()
     lastMagOffsetsValid = false;
     referenceYawAngle = 0.0f;
     posdAtLastYawReset = 0.0f;
+    magDecAng = 0.0f;
+    filtYawRate = 0.0f;
+    lastLearnedDecl = 0.0f;
 
     // zero data buffers
     storedIMU.reset();
@@ -524,6 +527,10 @@ void NavEKF2_core::UpdateStrapdownEquationsNED()
 
     // limit states to protect against divergence
     ConstrainStates();
+
+    // calculate the angular rate about the vertical
+    float rawYawRate = (Tbn_temp.c.x * correctedDelAng.x + Tbn_temp.c.y * correctedDelAng.y + Tbn_temp.c.z * correctedDelAng.z) / imuDataDelayed.delAngDT;
+    filtYawRate = 0.98f * filtYawRate + 0.02f * rawYawRate;
 }
 
 /*
@@ -1307,7 +1314,7 @@ Quaternion NavEKF2_core::calcQuatAndFieldStates(float roll, float pitch)
         float magHeading = atan2f(initMagNED.y, initMagNED.x);
 
         // get the magnetic declination
-        float magDecAng = use_compass() ? _ahrs->get_compass()->get_declination() : 0;
+        magDecAng = use_compass() ? _ahrs->get_compass()->get_declination() : 0;
 
         // calculate yaw angle rel to true north
         yaw = magDecAng - magHeading;
