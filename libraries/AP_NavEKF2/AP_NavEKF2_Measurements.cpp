@@ -430,6 +430,10 @@ void NavEKF2_core::readGpsData()
             // Commence GPS aiding when able to
             if (readyToUseGPS() && PV_AidingMode != AID_ABSOLUTE) {
                 PV_AidingMode = AID_ABSOLUTE;
+                // initialize scale factor variance
+                P[12][12] = sq(1e-3);
+                P[13][13] = P[12][12];
+                P[14][14] = P[12][12];
                 // Initialise EKF position and velocity states to last GPS measurement
                 ResetPosition();
                 ResetVelocity();
@@ -470,6 +474,10 @@ void NavEKF2_core::readGpsData()
                 // we can do optical flow only nav
                 frontend->_fusionModeGPS = 3;
                 PV_AidingMode = AID_RELATIVE;
+                // initialize scale factor variance
+                P[12][12] = sq(1e-3);
+                P[13][13] = P[12][12];
+                P[14][14] = P[12][12];
             } else {
                 // store the current position
                 lastKnownPositionNE.x = stateStruct.position.x;
