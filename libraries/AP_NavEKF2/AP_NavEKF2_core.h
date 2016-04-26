@@ -935,6 +935,9 @@ private:
 
     // vehicle specific initial gyro bias uncertainty
     float InitialGyroBiasUncertainty(void) const;
+
+    // vehicle specific initial gyro scale uncertainty (percent)
+    float InitialGyroScaleUncertaintyPct(void) const;
 };
 
 #endif // AP_NavEKF2_core

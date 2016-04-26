@@ -377,7 +377,7 @@ void NavEKF2_core::CovarianceInit()
     P[10][10] = P[9][9];
     P[11][11] = P[9][9];
     // gyro scale factor biases
-    P[12][12] = sq(1e-3);
+    P[12][12] = sq(InitialGyroScaleUncertaintyPct()*1.0e-2f);
     P[13][13] = P[12][12];
     P[14][14] = P[12][12];
     // Z delta velocity bias
