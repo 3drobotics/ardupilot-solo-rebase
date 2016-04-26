@@ -490,11 +490,6 @@ void NavEKF2_core::UpdateStrapdownEquationsNED()
     stateStruct.quat *= correctedDelAngQuat;
     stateStruct.quat.normalize();
 
-    // calculate the body to nav cosine matrix
-    Matrix3f Tbn_temp;
-    stateStruct.quat.rotation_matrix(Tbn_temp);
-    prevTnb = Tbn_temp.transposed();
-
     // transform body delta velocities to delta velocities in the nav frame
     // * and + operators have been overloaded
     // NOTE: delta velocity data has already been downsampled and rotated into the frame
@@ -533,8 +528,14 @@ void NavEKF2_core::UpdateStrapdownEquationsNED()
     ConstrainStates();
 
     // calculate the angular rate about the vertical
-    float rawYawRate = (Tbn_temp.c.x * correctedDelAng.x + Tbn_temp.c.y * correctedDelAng.y + Tbn_temp.c.z * correctedDelAng.z) / imuDataDelayed.delAngDT;
+    Matrix3f prevTbn = prevTnb.transposed();
+    float rawYawRate = (prevTbn.c.x * correctedDelAng.x + prevTbn.c.y * correctedDelAng.y + prevTbn.c.z * correctedDelAng.z) / imuDataDelayed.delAngDT;
     filtYawRate = 0.98f * filtYawRate + 0.02f * rawYawRate;
+
+    // calculate the body to nav cosine matrix
+    Matrix3f Tbn_temp;
+    stateStruct.quat.rotation_matrix(Tbn_temp);
+    prevTnb = Tbn_temp.transposed();
 }
 
 /*
