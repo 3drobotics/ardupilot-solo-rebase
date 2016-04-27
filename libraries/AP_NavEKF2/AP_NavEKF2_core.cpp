@@ -478,9 +478,19 @@ void NavEKF2_core::UpdateFilter(bool predict)
 */
 void NavEKF2_core::UpdateStrapdownEquationsNED()
 {
+    correctedDelAng   = imuDataDelayed.delAng;
+
+    // remove gyro scale factor errors
+    correctedDelAng.x *= stateStruct.gyro_scale.x;
+    correctedDelAng.y *= stateStruct.gyro_scale.y;
+    correctedDelAng.z *= stateStruct.gyro_scale.z;
+
+    // remove sensor bias errors
+    correctedDelAng -= stateStruct.gyro_bias * (imuDataDelayed.delAngDT / dtEkfAvg);
+
     // apply correction for earths rotation rate
     // % * - and + operators have been overloaded
-    correctedDelAng   = imuDataDelayed.delAng - prevTnb * earthRateNED*imuDataDelayed.delAngDT;
+    correctedDelAng -= prevTnb * earthRateNED*imuDataDelayed.delAngDT;
 
     // convert the rotation vector to its equivalent quaternion
     correctedDelAngQuat.from_axis_angle(correctedDelAng);
@@ -490,12 +500,16 @@ void NavEKF2_core::UpdateStrapdownEquationsNED()
     stateStruct.quat *= correctedDelAngQuat;
     stateStruct.quat.normalize();
 
+    correctedDelVel = imuDataDelayed.delVel;
+    correctedDelVel.z -= stateStruct.accel_zbias * (imuDataDelayed.delVelDT / dtEkfAvg);
+
     // transform body delta velocities to delta velocities in the nav frame
     // * and + operators have been overloaded
     // NOTE: delta velocity data has already been downsampled and rotated into the frame
     // before the delta angle rotation - hence use of the rotation from previous prediction step
+
     Vector3f delVelNav;  // delta velocity vector in earth axes
-    delVelNav  = prevTnb.transposed() * imuDataDelayed.delVel;
+    delVelNav  = prevTnb.transposed() * correctedDelVel;
 
     // correct for gravity
     delVelNav.z += GRAVITY_MSS * imuDataDelayed.delVelDT;
@@ -521,7 +535,7 @@ void NavEKF2_core::UpdateStrapdownEquationsNED()
     stateStruct.position += (stateStruct.velocity + lastVelocity) * (imuDataDelayed.delVelDT*0.5f);
 
     // accumulate the bias delta angle and time since last reset by an OF measurement arrival
-    delAngBodyOF += imuDataDelayed.delAng - stateStruct.gyro_bias;
+    delAngBodyOF += correctedDelAng;
     delTimeOF += imuDataDelayed.delAngDT;
 
     // limit states to protect against divergence
