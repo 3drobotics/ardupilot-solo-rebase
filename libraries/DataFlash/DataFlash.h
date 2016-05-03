@@ -49,8 +49,17 @@ public:
         _firmware_string(firmware_string)
         {
             AP_Param::setup_object_defaults(this, var_info);
+            if (_instance != nullptr) {
+                AP_HAL::panic("DataFlash must be singleton");
+            }
+            _instance = this;
         }
 
+    // get singleton instance
+    static DataFlash_Class *instance(void) {
+        return _instance;
+    }
+    
     void set_mission(const AP_Mission *mission);
 
     // initialisation
@@ -194,6 +203,43 @@ private:
     uint8_t _next_backend;
     DataFlash_Backend *backends[DATAFLASH_MAX_BACKENDS];
     const char *_firmware_string;
+
+    void internal_error() const;
+
+    /*
+     * support for dynamic Log_Write; user-supplies name, format,
+     * labels and values in a single function call.
+     */
+
+    // this structure looks much like struct LogStructure in
+    // LogStructure.h, however we need to remember a pointer value for
+    // efficiency of finding message types
+    struct {
+        uint8_t msg_type;
+        uint8_t msg_len;
+        const char *name;
+        const char *fmt;
+        const char *labels;
+    } log_write_fmts[MAX_LOG_WRITE_FMT_COUNT];
+    uint8_t _log_write_fmt_count = 0; // number of formats currently known
+
+    // return (possibly allocating) a msg_type value corresponding to name
+    int16_t msg_type_for_name(const char *name, const char *labels, const char *fmt);
+    // returns true if msg_type is associated with a message
+    bool msg_type_in_use(uint8_t msg_type) const;
+
+    // return a msg_type which is not currently in use (or -1 if none available)
+    int16_t find_free_msg_type() const;
+
+    // fill LogStructure with information about msg_type
+    bool fill_log_write_logstructure(struct LogStructure &logstruct, const uint8_t msg_type) const;
+
+    // calculate the length of a message using fields specified in
+    // fmt; includes the message header
+    int16_t Log_Write_calc_msg_len(const char *fmt) const;
+
+private:
+    static DataFlash_Class *_instance;
 };
 
 #endif
