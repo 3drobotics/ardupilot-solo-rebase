@@ -1216,5 +1216,11 @@ void AP_AHRS_NavEKF::getPosVelInnovations(Vector3f& velInnov, Vector3f& posInnov
     }
 }
 
+// is the EKF backend doing its own sensor logging?
+bool AP_AHRS_NavEKF::have_ekf_logging(void) const
+{
+    return false;
+}
+
 #endif // AP_AHRS_NAVEKF_AVAILABLE
 
