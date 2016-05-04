@@ -120,6 +120,12 @@ void AP_Compass_Backend::publish_filtered_field(const Vector3f &mag, uint8_t ins
     state.updated_unfiltered_field = false;
 }
 
+void AP_Compass_Backend::set_last_update_usec(uint32_t last_update, uint8_t instance)
+{
+    Compass::mag_state &state = _compass._state[instance];
+    state.last_update_usec = last_update;
+}
+
 /*
   register a new backend with frontend, returning instance which
   should be used in publish_field()
