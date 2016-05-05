@@ -242,7 +242,7 @@ float AP_Baro::get_air_density_ratio(void)
 // note that this relies on read() being called regularly to get new data
 float AP_Baro::get_climb_rate(void)
 {
-    if (_hil.have_crate) {
+    if (_hil.have_alt) {
         return _hil.climb_rate;
     }
     // we use a 7 point derivative filter on the climb rate. This seems
@@ -379,6 +379,9 @@ void AP_Baro::update(void)
         }
         if (_hil.have_alt) {
             sensors[0].altitude = _hil.altitude;
+        }
+        if (_hil.have_last_update) {
+            sensors[0].last_update_ms = _hil.last_update_ms;
         }
     }
 
