@@ -921,7 +921,7 @@ void DataFlash_Class::Log_Write_IMU(const AP_InertialSensor &ins)
 }
 
 // Write an accel/gyro delta time data packet
-void DataFlash_Class::Log_Write_IMUDT(const AP_InertialSensor &ins, uint64_t time_us)
+void DataFlash_Class::Log_Write_IMUDT(const AP_InertialSensor &ins, uint64_t time_us, uint8_t imu_mask)
 {
     float delta_t = ins.get_delta_time();
     float delta_vel_t = ins.get_delta_velocity_dt(0);
@@ -941,8 +941,10 @@ void DataFlash_Class::Log_Write_IMUDT(const AP_InertialSensor &ins, uint64_t tim
         delta_vel_y  : delta_velocity.y,
         delta_vel_z  : delta_velocity.z
     };
-    WriteBlock(&pkt, sizeof(pkt));
-    if (ins.get_gyro_count() < 2 && ins.get_accel_count() < 2) {
+    if (imu_mask & 1) {
+        WriteBlock(&pkt, sizeof(pkt));
+    }
+    if ((ins.get_gyro_count() < 2 && ins.get_accel_count() < 2) || !ins.use_gyro(1)) {
         return;
     }
 
@@ -965,7 +967,9 @@ void DataFlash_Class::Log_Write_IMUDT(const AP_InertialSensor &ins, uint64_t tim
         delta_vel_y  : delta_velocity.y,
         delta_vel_z  : delta_velocity.z
     };
-    WriteBlock(&pkt2, sizeof(pkt2));
+    if (imu_mask & 2) {
+        WriteBlock(&pkt2, sizeof(pkt2));
+    }
 
     if (ins.get_gyro_count() < 3 && ins.get_accel_count() < 3) {
         return;
@@ -989,7 +993,9 @@ void DataFlash_Class::Log_Write_IMUDT(const AP_InertialSensor &ins, uint64_t tim
         delta_vel_y  : delta_velocity.y,
         delta_vel_z  : delta_velocity.z
     };
-    WriteBlock(&pkt3, sizeof(pkt3));
+    if (imu_mask & 4) {
+        WriteBlock(&pkt3, sizeof(pkt3));
+    }
 }
 
 void DataFlash_Class::Log_Write_Vibration(const AP_InertialSensor &ins)
