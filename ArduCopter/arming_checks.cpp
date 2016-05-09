@@ -487,7 +487,8 @@ bool Copter::pre_arm_gps_checks(bool display_failure)
         return false;
     }
 
-    if (position_ok() && ekf_innovation_peak > 1.0f) {
+    nav_filter_status filt_status = inertial_nav.get_filter_status();
+    if (filt_status.flags.horiz_pos_abs && ekf_innovation_peak > 1.0f) {
         if (display_failure) {
             gcs_send_text(MAV_SEVERITY_CRITICAL,"PreArm: Waiting for Nav Checks");
         }
