@@ -521,7 +521,7 @@ bool Copter::pre_arm_gps_checks(bool display_failure)
     }
 
     // check EKF compass variance is below failsafe threshold
-    float vel_variance, pos_variance, hgt_variance, tas_variance;
+    /*float vel_variance, pos_variance, hgt_variance, tas_variance;
     Vector3f mag_variance;
     Vector2f offset;
     ahrs.get_variances(vel_variance, pos_variance, hgt_variance, mag_variance, tas_variance, offset);
@@ -530,7 +530,7 @@ bool Copter::pre_arm_gps_checks(bool display_failure)
             gcs_send_text(MAV_SEVERITY_CRITICAL,"PreArm: Waiting for Nav Checks");
         }
         return false;
-    }
+    }*/
 
     // check home and EKF origin are not too far
     if (far_from_EKF_origin(ahrs.get_home())) {
