@@ -152,6 +152,13 @@ public:
 
     void periodic_tasks(); // may want to split this into GCS/non-GCS duties
 
+    // number of blocks that have been dropped
+    uint32_t num_dropped(void) const;
+
+    // accesss to public parameters
+    bool log_while_disarmed(void) const { return _params.log_disarmed != 0; }
+    uint8_t log_replay(void) const { return _params.log_replay; }
+    
     vehicle_startup_message_Log_Writer _vehicle_messages;
 
     // parameter support
@@ -159,6 +166,8 @@ public:
     struct {
         AP_Int8 backend_types;
         AP_Int8 file_bufsize; // in kilobytes
+        AP_Int8 log_disarmed;
+        AP_Int8 log_replay;
     } _params;
 
     const struct LogStructure *structure(uint16_t num) const;
