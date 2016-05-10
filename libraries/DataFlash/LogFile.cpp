@@ -1193,7 +1193,8 @@ void DataFlash_Class::Log_Write_EKF(AP_AHRS_NavEKF &ahrs, bool optFlowEnabled)
         Vector3f magVar;
         float tasVar;
         Vector2f offset;
-        uint8_t faultStatus, timeoutStatus;
+        uint16_t faultStatus;
+        uint8_t timeoutStatus;
         nav_filter_status solutionStatus;
         nav_gps_status gpsStatus {};
         ahrs.get_NavEKF().getVariances(velVar, posVar, hgtVar, magVar, tasVar, offset);
@@ -1213,7 +1214,7 @@ void DataFlash_Class::Log_Write_EKF(AP_AHRS_NavEKF &ahrs, bool optFlowEnabled)
             sqrtvarVT : (int16_t)(100*tasVar),
             offsetNorth : (int8_t)(offset.x),
             offsetEast : (int8_t)(offset.y),
-            faults : (uint8_t)(faultStatus),
+            faults : (uint16_t)(faultStatus),
             timeouts : (uint8_t)(timeoutStatus),
             solution : (uint16_t)(solutionStatus.value),
             gps : (uint16_t)(gpsStatus.value)
