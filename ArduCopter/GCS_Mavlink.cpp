@@ -1591,6 +1591,17 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg)
 
             break;
         }
+        
+        case MAV_CMD_DO_ARM_CHECK: {
+            result = MAV_RESULT_ACCEPTED;
+            
+            // perform pre-arm checks and send the status text
+            if (copter.pre_arm_checks(true)) {
+                send_text(MAV_SEVERITY_INFO, "PreArm: OK");
+            }
+            
+            break;
+        }
 
         case MAV_CMD_SOLO_BTN_FLY_CLICK: {
             result = MAV_RESULT_ACCEPTED;
