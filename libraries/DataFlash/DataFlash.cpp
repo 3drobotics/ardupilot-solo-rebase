@@ -203,11 +203,6 @@ void DataFlash_Class::Log_Write_Message(const char *message)
     FOR_EACH_BACKEND(Log_Write_Message(message));
 }
 
-void DataFlash_Class::Log_Write_Mode(uint8_t mode)
-{
-    FOR_EACH_BACKEND(Log_Write_Mode(mode));
-}
-
 void DataFlash_Class::Log_Write_Mode(uint8_t mode, uint8_t reason)
 {
     FOR_EACH_BACKEND(Log_Write_Mode(mode, reason));
