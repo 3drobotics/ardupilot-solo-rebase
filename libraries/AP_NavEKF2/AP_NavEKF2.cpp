@@ -25,7 +25,7 @@
 #define GBIAS_P_NSE_DEFAULT     1.0E-04f
 #define GSCALE_P_NSE_DEFAULT    5.0E-04f
 #define ABIAS_P_NSE_DEFAULT     1.0E-03f
-#define MAG_P_NSE_DEFAULT       2.5E-02f
+#define MAG_P_NSE_DEFAULT       5.0E-04f
 #define VEL_I_GATE_DEFAULT      500
 #define POS_I_GATE_DEFAULT      500
 #define HGT_I_GATE_DEFAULT      500
@@ -49,7 +49,7 @@
 #define GBIAS_P_NSE_DEFAULT     1.0E-04f
 #define GSCALE_P_NSE_DEFAULT    5.0E-04f
 #define ABIAS_P_NSE_DEFAULT     1.0E-03f
-#define MAG_P_NSE_DEFAULT       2.5E-02f
+#define MAG_P_NSE_DEFAULT       5.0E-04f
 #define VEL_I_GATE_DEFAULT      500
 #define POS_I_GATE_DEFAULT      500
 #define HGT_I_GATE_DEFAULT      500
@@ -73,7 +73,7 @@
 #define GBIAS_P_NSE_DEFAULT     1.0E-04f
 #define GSCALE_P_NSE_DEFAULT    5.0E-04f
 #define ABIAS_P_NSE_DEFAULT     1.0E-03f
-#define MAG_P_NSE_DEFAULT       2.5E-02f
+#define MAG_P_NSE_DEFAULT       5.0E-04f
 #define VEL_I_GATE_DEFAULT      500
 #define POS_I_GATE_DEFAULT      500
 #define HGT_I_GATE_DEFAULT      500
@@ -97,7 +97,7 @@
 #define GBIAS_P_NSE_DEFAULT     1.0E-04f
 #define GSCALE_P_NSE_DEFAULT    5.0E-04f
 #define ABIAS_P_NSE_DEFAULT     1.0E-03f
-#define MAG_P_NSE_DEFAULT       2.5E-02f
+#define MAG_P_NSE_DEFAULT       5.0E-04f
 #define VEL_I_GATE_DEFAULT      500
 #define POS_I_GATE_DEFAULT      500
 #define HGT_I_GATE_DEFAULT      500
