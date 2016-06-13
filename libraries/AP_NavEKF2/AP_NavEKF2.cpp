@@ -444,7 +444,7 @@ const AP_Param::GroupInfo NavEKF2::var_info[] = {
     // @Increment: 0.05
     // @User: Advanced
     // @Units: gauss
-    AP_GROUPINFO("YAW_M_NSE", 37, NavEKF2, _magNoise, 0.5),
+    AP_GROUPINFO("YAW_M_NSE", 37, NavEKF2, _yawNoise, 0.5f),
 
     // @Param: YAW_I_GATE
     // @DisplayName: Yaw measurement gate size
