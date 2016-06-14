@@ -218,7 +218,7 @@ public:
     void set_gyro(uint8_t instance, const Vector3f &gyro);
     void set_delta_time(float delta_time);
     void set_delta_velocity(uint8_t instance, float deltavt, const Vector3f &deltav);
-    void set_delta_angle(uint8_t instance, const Vector3f &deltaa);
+    void set_delta_angle(uint8_t instance, const Vector3f &deltaa, float deltaat);
 
     AuxiliaryBus *get_auxiliary_bus(int16_t backend_id) { return get_auxiliary_bus(backend_id, 0); }
     AuxiliaryBus *get_auxiliary_bus(int16_t backend_id, uint8_t instance);
@@ -240,9 +240,6 @@ public:
 
     // Returns newly calculated trim values if calculated
     bool get_new_trim(float& trim_roll, float &trim_pitch);
-
-    // returns true when accelerometers are being calibrated
-    bool calibrating_accel() const;
 
     // initialise and register accel calibrator
     // called during the startup of accel cal
@@ -417,13 +414,7 @@ private:
 
     //save accelerometer bias and scale factors
     void _acal_save_calibrations();
-    void _acal_event_start();
-    void _acal_event_success();
     void _acal_event_failure();
-
-    // gyro calibration functionality
-    Vector3f _acal_delta_ang_sum[INS_MAX_INSTANCES];
-    float _acal_time_sum[INS_MAX_INSTANCES];
 
     // Returns AccelCalibrator objects pointer for specified acceleromter
     AccelCalibrator* _acal_get_calibrator(uint8_t i) { return i<get_accel_count()?&(_accel_calibrator[i]):NULL; }
