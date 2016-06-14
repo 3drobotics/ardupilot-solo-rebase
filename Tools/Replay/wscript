@@ -1,8 +1,13 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
+import boards
+
 def build(bld):
+    if not isinstance(bld.get_board(), boards.linux):
+        return
+
     bld.ap_program(
         use='ap',
-        program_group='tools',
+        program_groups='tools',
     )
