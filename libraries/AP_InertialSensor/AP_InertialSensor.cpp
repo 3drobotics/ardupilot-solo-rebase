@@ -1338,6 +1338,15 @@ void AP_InertialSensor::acal_init()
     }
 }
 
+bool AP_InertialSensor::calibrating_accel() const
+{
+    if (_acal == NULL) {
+        return false;
+    } else {
+        return _acal->get_status() == ACCEL_CAL_WAITING_FOR_ORIENTATION || _acal->get_status() == ACCEL_CAL_COLLECTING_SAMPLE;
+    }
+}
+
 // update accel calibrator
 void AP_InertialSensor::acal_update()
 {
