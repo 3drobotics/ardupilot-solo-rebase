@@ -34,10 +34,14 @@
 // maximum number of mounts
 #define AP_MOUNT_MAX_INSTANCES          1
 
+// maximum retries for MAVLink detection
+#define MAX_RETRIES             5
+
 // declare backend classes
 class AP_Mount_Backend;
 class AP_Mount_Servo;
 class AP_Mount_SoloGimbal;
+class AP_Mount_QX1;
 class AP_Mount_Alexmos;
 class AP_Mount_SToRM32;
 class AP_Mount_SToRM32_serial;
@@ -56,14 +60,14 @@ class AP_Mount
     friend class AP_Mount_Alexmos;
     friend class AP_Mount_SToRM32;
     friend class AP_Mount_SToRM32_serial;
-
+    friend class AP_Mount_QX1;
 public:
 
     // Enums
     enum MountType {
         Mount_Type_None = 0,            /// no mount
         Mount_Type_Servo = 1,           /// servo controlled mount
-        Mount_Type_SoloGimbal = 2,      /// Solo's gimbal
+        Mount_Type_MAVLink = 2,         /// MAVLink gimbal
         Mount_Type_Alexmos = 3,         /// Alexmos mount
         Mount_Type_SToRM32 = 4,         /// SToRM32 mount using MAVLink protocol
         Mount_Type_SToRM32_serial = 5   /// SToRM32 mount using custom serial protocol
@@ -76,7 +80,7 @@ public:
     void init(DataFlash_Class *dataflash, const AP_SerialManager& serial_manager);
 
     // update - give mount opportunity to update servos.  should be called at 10hz or higher
-    void update();
+    void update(uint8_t mount_sysid, AP_SerialManager& serial_manager);
 
     // used for gimbals that need to read INS data at full rate
     void update_fast();
@@ -151,6 +155,13 @@ protected:
     uint8_t             _num_instances;     // number of mounts instantiated
     uint8_t             _primary;           // primary mount
     AP_Mount_Backend    *_backends[AP_MOUNT_MAX_INSTANCES];         // pointers to instantiated mounts
+
+    // mavlink detect vars
+    uint8_t             _retries;
+    bool                _mav_gimbal_found;
+    bool                primary_set = false;
+    uint32_t            _last_time;
+    bool                _timeout;
 
     // backend state including parameters
     struct mount_state {
