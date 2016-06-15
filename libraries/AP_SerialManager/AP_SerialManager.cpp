@@ -274,6 +274,29 @@ void AP_SerialManager::set_console_baud(enum SerialProtocol protocol, uint8_t in
     }
 }
 
+// set_console_baud - sets the console's baud rate to the rate specified by the protocol
+//  used on APM2 to switch the console between the console baud rate (115200) and the SERIAL1 baud rate (user configurable)
+void AP_SerialManager::set_and_save_baud(enum SerialProtocol protocol, uint8_t instance, uint32_t baud)
+{
+    uint8_t found_instance = 0;
+
+    // find baud rate of this protocol
+    for (uint8_t i=0; i<SERIALMANAGER_NUM_PORTS; i++) {
+        if (protocol_match(protocol, (enum SerialProtocol)state[i].protocol.get())) {
+            if (instance == found_instance) {
+                // set console's baud rate
+                state[i].uart->end();
+                hal.scheduler->delay(100);
+                state[i].uart->begin(baud);
+                state[i].baud.set(baud/1000);
+                state[i].baud.save();
+                return;
+            }
+            found_instance++;
+        }
+    }
+}
+
 /*
  *  map from a 16 bit EEPROM baud rate to a real baud rate.
  *  For PX4 we can do 1.5MBit, although 921600 is more reliable.
