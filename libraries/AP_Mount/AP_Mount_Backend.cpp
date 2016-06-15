@@ -117,13 +117,16 @@ void AP_Mount_Backend::update_targets_from_rc()
         if (pan_rc_in && (rc_ch(pan_rc_in))) {
             _angle_ef_target_rad.z = angle_input_rad(rc_ch(pan_rc_in), _state._pan_angle_min, _state._pan_angle_max);
         }
+
     }
+
 }
 
 // returns the angle (degrees*100) that the RC_Channel input is receiving
 int32_t AP_Mount_Backend::angle_input(RC_Channel* rc, int16_t angle_min, int16_t angle_max)
 {
-    return (rc->get_reverse() ? -1 : 1) * (rc->radio_in - rc->radio_min) * (int32_t)(angle_max - angle_min) / (rc->radio_max - rc->radio_min) + (rc->get_reverse() ? angle_max : angle_min);
+
+    return (rc->radio_in == 0)?0:(rc->get_reverse() ? -1 : 1) * (rc->radio_in - rc->radio_min) * (int32_t)(angle_max - angle_min) / (rc->radio_max - rc->radio_min) + (rc->get_reverse() ? angle_max : angle_min);
 }
 
 // returns the angle (radians) that the RC_Channel input is receiving
