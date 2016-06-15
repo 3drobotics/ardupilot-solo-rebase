@@ -114,6 +114,8 @@ public:
     // set_console_baud - sets the console's baud rate to the rate specified by the protocol
     void set_console_baud(enum SerialProtocol protocol, uint8_t instance) const;
 
+    void set_and_save_baud(enum SerialProtocol protocol, uint8_t instance, uint32_t baud);
+
     // parameter var table
     static const struct AP_Param::GroupInfo var_info[];
 
