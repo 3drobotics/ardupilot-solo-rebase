@@ -115,7 +115,14 @@ class sitl(Board):
         ]
         env.LIB += [
             'm',
+            'VehicleBuild',
         ]
+
+        env.INCLUDES += [
+            '/Users/georgehines/Code/PhysicalSimulation/include',
+            '/Users/georgehines/Code/PhysicalSimulation/MATLAB_dist/include',
+        ]
+        
         env.LINKFLAGS += ['-pthread',]
         env.AP_LIBRARIES += [
             'AP_HAL_SITL',

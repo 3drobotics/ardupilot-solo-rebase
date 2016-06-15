@@ -145,10 +145,10 @@ Solo::Solo(const char *home_str, const char *frame_str) :
  */
 void Solo::update(const struct sitl_input &input)
 {
-    VehicleBuild_U.VoltageCommands.M1 = constrain_float((input.servos[motor_offset+motors[0].servo]-1000)/1000.0, 0, 1);
-    VehicleBuild_U.VoltageCommands.M2 = constrain_float((input.servos[motor_offset+motors[1].servo]-1000)/1000.0, 0, 1);
-    VehicleBuild_U.VoltageCommands.M3 = constrain_float((input.servos[motor_offset+motors[2].servo]-1000)/1000.0, 0, 1);
-    VehicleBuild_U.VoltageCommands.M4 = constrain_float((input.servos[motor_offset+motors[3].servo]-1000)/1000.0, 0, 1);
+    VehicleBuild_U.VoltageCommands.M1 = constrain_float((input.servos[frame->motor_offset+frame->motors[0].servo]-1000)/1000.0, 0, 1);
+    VehicleBuild_U.VoltageCommands.M2 = constrain_float((input.servos[frame->motor_offset+frame->motors[1].servo]-1000)/1000.0, 0, 1);
+    VehicleBuild_U.VoltageCommands.M3 = constrain_float((input.servos[frame->motor_offset+frame->motors[2].servo]-1000)/1000.0, 0, 1);
+    VehicleBuild_U.VoltageCommands.M4 = constrain_float((input.servos[frame->motor_offset+frame->motors[3].servo]-1000)/1000.0, 0, 1);
 
     VehicleBuild_step();
 
@@ -158,12 +158,8 @@ void Solo::update(const struct sitl_input &input)
     gyro[2] = VehicleBuild_Y.SensorData_o.omega_body[2];
 
     // assign dcm
-    Quaternion(VehicleBuild_Y.State.World.Q[0],VehicleBuild_Y.State.World.Q[1],VehicleBuild_Y.State.World.Q[2],VehicleBuild_Y.State.World.Q[3]).rotation_matrix(&dcm);
+    Quaternion(VehicleBuild_Y.State.World.Q[0],VehicleBuild_Y.State.World.Q[1],VehicleBuild_Y.State.World.Q[2],VehicleBuild_Y.State.World.Q[3]).rotation_matrix(dcm);
 
-    // assign accel_earth
-    accel_earth[0] = VehicleBuild_Y.State.World.ax;
-    accel_earth[1] = VehicleBuild_Y.State.World.ay;
-    accel_earth[2] = VehicleBuild_Y.State.World.az;
 
     // assign accel_body
     accel_body[0] = VehicleBuild_Y.SensorData_o.accel_body[0];
