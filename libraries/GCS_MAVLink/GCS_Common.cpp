@@ -291,10 +291,11 @@ void GCS_MAVLINK::handle_mission_request(AP_Mission &mission, mavlink_message_t 
     ret_packet.command = cmd.id;
 
     _mav_finalize_message_chan_send(chan, 
-                                    MAVLINK_MSG_ID_MISSION_ITEM,
+                                    MAVLINK_MSG_ID_MISSION_ITEM_INT,
                                     (const char *)&ret_packet,
-                                    MAVLINK_MSG_ID_MISSION_ITEM_LEN,
-                                    MAVLINK_MSG_ID_MISSION_ITEM_CRC);
+                                    MAVLINK_MSG_ID_MISSION_ITEM_MIN_LEN,
+                                    MAVLINK_MSG_ID_MISSION_ITEM_INT_LEN,
+                                    MAVLINK_MSG_ID_MISSION_ITEM_INT_CRC);
     return;
 
 mission_item_send_failed:
