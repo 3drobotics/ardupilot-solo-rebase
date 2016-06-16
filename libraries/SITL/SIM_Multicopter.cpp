@@ -22,7 +22,7 @@
 
 #include <stdio.h>
 
-using namespace SITL;
+namespace SITL {
 
 MultiCopter::MultiCopter(const char *home_str, const char *frame_str) :
     Aircraft(home_str, frame_str),
@@ -68,4 +68,4 @@ void MultiCopter::update(const struct sitl_input &input)
     update_position();
 }
 
-
+}

@@ -58,7 +58,7 @@ ifneq ($(SYSTYPE),Darwin)
 LDFLAGS        +=   -Wl,--gc-sections -Wl,-Map -Wl,$(SKETCHMAP)
 endif
 
-LIBS ?= -lm -pthread
+LIBS ?= -lm -pthread -L/Users/georgehines/Code/PhysicalSimulation/lib/ -lVehicleBuild
 ifneq ($(findstring CYGWIN, $(SYSTYPE)),)
 LIBS += -lwinmm
 endif
@@ -125,6 +125,6 @@ $(SKETCHELF): $(SKETCHOBJS) $(LIBOBJS)
 endif
 
 SKETCH_INCLUDES	=	$(SKETCHLIBINCLUDES)
-SLIB_INCLUDES	=	-I$(dir $<)/utility $(SKETCHLIBINCLUDES)
+SLIB_INCLUDES	=	-I$(dir $<)/utility $(SKETCHLIBINCLUDES) -I/Users/georgehines/Code/PhysicalSimulation/include/ -I/Users/georgehines/Code/PhysicalSimulation/MATLAB_dist/include/
 
 include $(MK_DIR)/build_rules.mk

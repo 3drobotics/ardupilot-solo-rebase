@@ -22,7 +22,7 @@
 
 #include <stdio.h>
 
-using namespace SITL;
+namespace SITL {
 
 static const Motor quad_plus_motors[] =
 {
@@ -153,7 +153,7 @@ void Frame::calculate_forces(const Aircraft &aircraft,
 
     if (terminal_velocity > 0) {
         // air resistance
-        Vector3f air_resistance = -aircraft.get_velocity_air_ef() * (GRAVITY_MSS/terminal_velocity);
+        Vector3f air_resistance = -aircraft.get_velocity_ef() * (GRAVITY_MSS/terminal_velocity);
         body_accel += aircraft.get_dcm().transposed() * air_resistance;
     }
 
@@ -169,3 +169,4 @@ void Frame::calculate_forces(const Aircraft &aircraft,
                            aircraft.rand_normal(0, 1)) * accel_noise * noise_scale;
 }
 
+}

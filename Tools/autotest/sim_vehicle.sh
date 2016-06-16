@@ -247,6 +247,11 @@ case $FRAME in
         MODEL="+"
         DEFAULTS_PATH="$autotest/copter_params.parm"
 	;;
+    solo)
+  BUILD_TARGET="sitl"
+        MODEL="Solo"
+        DEFAULTS_PATH="$autotest/copter_params.parm"
+  ;;
     X)
 	BUILD_TARGET="sitl"
         EXTRA_PARM="param set FRAME 1;"

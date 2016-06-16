@@ -20,7 +20,7 @@
 #include "SIM_Motor.h"
 #include <AP_Motors/AP_Motors.h>
 
-using namespace SITL;
+namespace SITL {
 
 // calculate rotational accel and thrust for a motor
 void Motor::calculate_forces(const Aircraft::sitl_input &input,
@@ -36,3 +36,4 @@ void Motor::calculate_forces(const Aircraft::sitl_input &input,
     thrust(0, 0, motor_speed * thrust_scale); // newtons
 }
 
+}
