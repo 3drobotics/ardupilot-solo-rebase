@@ -510,17 +510,17 @@ void AP_Mount::update(uint8_t mount_compid,  AP_SerialManager& serial_manager)
                 }
             } else if(_timeout) {
                 //change baud rate of gimbal port and retry
-                uint32_t baud = serial_manager.find_baudrate(AP_SerialManager::SerialProtocol_MAVLink,1);
-                AP_HAL::UARTDriver *uart = serial_manager.find_serial(AP_SerialManager::SerialProtocol_MAVLink,1);
+                uint32_t baud = serial_manager.find_baudrate(AP_SerialManager::SerialProtocol_MAVLink,2);
+                AP_HAL::UARTDriver *uart = serial_manager.find_serial(AP_SerialManager::SerialProtocol_MAVLink,2);
                 hal.console->printf("Looking for Gimbal @ baud: %d!!\n", baud);
                 if(baud == 921600) {
                     hal.console->printf("Looking for R10C Gimbal!!\n");
-                    serial_manager.set_and_save_baud(AP_SerialManager::SerialProtocol_MAVLink,1,38400);
-                } else if(baud == 38400) {
+                    serial_manager.set_baud(AP_SerialManager::SerialProtocol_MAVLink,2,230400);
+                } else if(baud == 230400) {
                     hal.console->printf("Looking for Solo Gimbal!!\n");
-                    serial_manager.set_and_save_baud(AP_SerialManager::SerialProtocol_MAVLink,1,921600);
+                    serial_manager.set_baud(AP_SerialManager::SerialProtocol_MAVLink,2,921600);
                 } else {
-                    serial_manager.set_and_save_baud(AP_SerialManager::SerialProtocol_MAVLink,1,38400);
+                    serial_manager.set_baud(AP_SerialManager::SerialProtocol_MAVLink,2,230400);
                 }
 
                 _timeout = false;
