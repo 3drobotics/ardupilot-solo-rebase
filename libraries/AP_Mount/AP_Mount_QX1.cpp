@@ -119,7 +119,13 @@ void AP_Mount_QX1::update_fast()
 
 
     Quaternion quat;
-    _frontend._ahrs.get_NavEKF_const().getQuaternion(quat);
+    if(_frontend._ahrs.get_ekf_type() == 1) {
+        _frontend._ahrs.get_NavEKF_const().getQuaternion(quat);
+    } else if(_frontend._ahrs.get_ekf_type() == 2) {
+        _frontend._ahrs.get_NavEKF2_const().getQuaternion(quat);
+    } else {
+        return;
+    }
     Vector3f euler312 = quat.to_vector312();
     //Quaternion quat;
     //quat.from_euler(_frontend._ahrs.roll,_frontend._ahrs.pitch,0);
