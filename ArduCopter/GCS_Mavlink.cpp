@@ -1125,7 +1125,19 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg)
 #endif
         break;
     }
-
+    case MAVLINK_MSG_ID_QX1_GIMBAL_REPORT:
+    {
+        static int32_t last_received;
+#if MOUNT == ENABLED
+        mavlink_qx1_gimbal_report_t qx1_report;
+        mavlink_msg_qx1_gimbal_report_decode(msg, &qx1_report);
+        float roll_out  = (float)qx1_report.roll_out/(1<<20);
+        float pitch_out = (float)qx1_report.pitch_out/(1<<20);
+        //hal.console->printf("%f %f\n", pitch_out, roll_out);
+        copter.DataFlash.Log_Write_QX1Gimbal(roll_out, pitch_out, qx1_report.roll_pwm, qx1_report.pitch_pwm);
+#endif
+        break;
+    }
     case MAVLINK_MSG_ID_RC_CHANNELS_OVERRIDE:       // MAV ID: 70
     {
         // allow override of RC channel values for HIL
