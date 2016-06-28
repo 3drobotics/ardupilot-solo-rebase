@@ -92,23 +92,6 @@ void AP_Mount_QX1::update()
     move_servo(_roll_idx, _angle_bf_output_deg.x*10, _state._roll_angle_min*0.1f, _state._roll_angle_max*0.1f);
     move_servo(_tilt_idx, _angle_bf_output_deg.y*10, _state._tilt_angle_min*0.1f, _state._tilt_angle_max*0.1f);
     move_servo(_pan_idx,  _angle_bf_output_deg.z*10, _state._pan_angle_min*0.1f, _state._pan_angle_max*0.1f);
-    uint32_t tstamp = AP_HAL::millis();
-    struct log_Gimbal1 pkt1 = {
-        LOG_PACKET_HEADER_INIT(LOG_GIMBAL1_MSG),
-        time_ms : tstamp,
-        delta_time      : 0,
-        delta_angles_x  : 0,
-        delta_angles_y  : 0,
-        delta_angles_z  : 0,
-        delta_velocity_x : 0,
-        delta_velocity_y : 0,
-        delta_velocity_z : 0,
-        joint_angles_x  : _angle_bf_output_deg.x,
-        joint_angles_y  : _angle_bf_output_deg.y,
-        joint_angles_z  : _angle_bf_output_deg.z
-    };
-    _frontend._dataflash->WriteBlock(&pkt1, sizeof(pkt1));
-
 }
 
 void AP_Mount_QX1::update_fast()
@@ -129,9 +112,9 @@ void AP_Mount_QX1::update_fast()
     Vector3f euler312 = quat.to_vector312();
     //Quaternion quat;
     //quat.from_euler(_frontend._ahrs.roll,_frontend._ahrs.pitch,0);
-    if(degrees(_frontend._ahrs.roll) > 150 || degrees(_frontend._ahrs.roll) < -150) {
-        return;
-    }
+    //if(degrees(_frontend._ahrs.roll) > 150 || degrees(_frontend._ahrs.roll) < -150) {
+    //    return;
+    //}
 
     mavlink_msg_attitude_send(
         chan,
