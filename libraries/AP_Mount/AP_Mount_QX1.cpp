@@ -94,7 +94,7 @@ void AP_Mount_QX1::update()
     move_servo(_pan_idx,  _angle_bf_output_deg.z*10, _state._pan_angle_min*0.1f, _state._pan_angle_max*0.1f);
 }
 
-void AP_Mount_QX1::update_fast()
+void AP_Mount_QX1::gmb_att_update()
 {
     const AP_InertialSensor &ins = _frontend._ahrs.get_ins();
     const Vector3f &gyro = ins.get_gyro();
