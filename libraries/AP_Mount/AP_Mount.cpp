@@ -482,6 +482,9 @@ void AP_Mount::init(DataFlash_Class *dataflash, const AP_SerialManager& serial_m
 void AP_Mount::update(uint8_t mount_compid,  AP_SerialManager& serial_manager)
 {
 #if AP_AHRS_NAVEKF_AVAILABLE
+    static AP_HAL::UARTDriver *uart = serial_manager.find_serial(AP_SerialManager::SerialProtocol_MAVLink,1);
+    static bool begin_gmb_uart;
+    static uint32_t baud = serial_manager.find_baudrate(AP_SerialManager::SerialProtocol_MAVLink,1);
     for (uint8_t instance=0; instance<AP_MOUNT_MAX_INSTANCES; instance++) {
 
         if(_retries > MAX_RETRIES) { //no mavlink gimbal found
@@ -510,28 +513,33 @@ void AP_Mount::update(uint8_t mount_compid,  AP_SerialManager& serial_manager)
                 }
             } else if(_timeout) {
                 //change baud rate of gimbal port and retry
-                uint32_t baud = serial_manager.find_baudrate(AP_SerialManager::SerialProtocol_MAVLink,1);
-                AP_HAL::UARTDriver *uart = serial_manager.find_serial(AP_SerialManager::SerialProtocol_MAVLink,1);
                 if(baud == 921600) {
                     hal.console->printf("Looking for R10C Gimbal!!\n");
-                    serial_manager.set_baud(AP_SerialManager::SerialProtocol_MAVLink,1,230400);
-                    hal.console->printf("Looking for Gimbal @ baud: %d!!\n", 230400);
+                    uart->end();
+                    baud = 230400;
                 } else if(baud == 230400) {
                     hal.console->printf("Looking for Solo Gimbal!!\n");
-                    serial_manager.set_baud(AP_SerialManager::SerialProtocol_MAVLink,1,921600);
-                    hal.console->printf("Looking for Gimbal @ baud: %d!!\n", 921600);
+                    uart->end();
+                    baud = 921600;
                 } else {
-                    serial_manager.set_baud(AP_SerialManager::SerialProtocol_MAVLink,1,230400);
-                    hal.console->printf("Looking for Gimbal @ baud: %d!!\n", 921600);
+                    hal.console->printf("Setting Back to Default Baud: %d!!\n", 921600);
+                    uart->end();
+                    baud = 921600;
                 }
 
                 _timeout = false;
+                begin_gmb_uart = true;
                 _last_time = AP_HAL::millis();
                 _retries++;
                 if(_retries == MAX_RETRIES) {
                     hal.console->printf("No MavLink Gimbal Found!!\n");
                 }
             } else {
+                if(begin_gmb_uart && ((AP_HAL::millis() - _last_time)>=1000)) {
+                    uart->begin(baud);
+                    hal.console->printf("Setting Gimbal port baud to %d\n", baud);
+                    begin_gmb_uart = false;
+                }
                 _timeout = ((AP_HAL::millis() - _last_time)>=5000) ? true : false;
             }
         }
