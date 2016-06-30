@@ -131,6 +131,7 @@ const AP_Scheduler::Task Copter::scheduler_tasks[] = {
     SCHED_TASK(ten_hz_logging_loop,   10,    350),
     SCHED_TASK(fifty_hz_logging_loop, 50,    110),
     SCHED_TASK(full_rate_logging_loop,400,    100),
+    SCHED_TASK(gmb_att_update,        400,    100),
     SCHED_TASK(dataflash_periodic,    400,    300),
     SCHED_TASK(perf_update,           0.1,    75),
     SCHED_TASK(read_receiver_rssi,    10,     75),
@@ -347,6 +348,16 @@ void Copter::update_mount()
 #if MOUNT == ENABLED
     // update camera mount's position
     camera_mount.update(mount_compid, serial_manager);
+#endif
+}
+
+// update_mount - update camera mount position
+// should be run at 50hz
+void Copter::gmb_att_update()
+{
+#if MOUNT == ENABLED
+    // update camera mount's position
+    camera_mount.gmb_att_update();
 #endif
 }
 
