@@ -84,7 +84,7 @@ public:
 
     // used for gimbals that need to read INS data at full rate
     void update_fast();
-
+    void gmb_att_update();
     // get_mount_type - returns the type of mount
     AP_Mount::MountType get_mount_type() const { return get_mount_type(_primary); }
     AP_Mount::MountType get_mount_type(uint8_t instance) const;
