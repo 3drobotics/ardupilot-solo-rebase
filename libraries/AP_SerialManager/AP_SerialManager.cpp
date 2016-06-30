@@ -286,7 +286,6 @@ void AP_SerialManager::set_baud(enum SerialProtocol protocol, uint8_t instance, 
             if (instance == found_instance) {
                 // set console's baud rate
                 state[i].uart->end();
-                hal.scheduler->delay(1000);
                 state[i].uart->begin(baud);
                 return;
             }
