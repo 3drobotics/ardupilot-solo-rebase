@@ -545,6 +545,15 @@ void AP_Mount::update(uint8_t mount_compid,  AP_SerialManager& serial_manager)
     }
 }
 
+void AP_Mount::gmb_att_update()
+{
+    // update each instance
+    for (uint8_t instance=0; instance<AP_MOUNT_MAX_INSTANCES; instance++) {
+        if (_backends[instance] != NULL) {
+            _backends[instance]->gmb_att_update();
+        }
+    }
+}
 // used for gimbals that need to read INS data at full rate
 void AP_Mount::update_fast()
 {
