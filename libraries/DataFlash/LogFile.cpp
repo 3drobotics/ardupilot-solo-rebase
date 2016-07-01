@@ -1810,11 +1810,12 @@ void DataFlash_Class::Log_Write_RPM(const AP_RPM &rpm_sensor)
     WriteBlock(&pkt, sizeof(pkt));
 }
 
-void DataFlash_Class::Log_Write_QX1Gimbal(float rout,float pout, uint16_t rpwm, uint16_t ppwm)
+void DataFlash_Class::Log_Write_QX1Gimbal(float ref, float rout,float pout, uint16_t rpwm, uint16_t ppwm)
 {
     struct log_QX1Gimbal pkt = {
         LOG_PACKET_HEADER_INIT(LOG_QX1GIMBAL_MSG),
         time_us         : AP_HAL::micros64(),
+        pitch_ref       : ref,
         roll_out        : rout,
         pitch_out       : pout,
         roll_pwm        : rpwm,

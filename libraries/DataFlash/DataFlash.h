@@ -126,7 +126,7 @@ public:
     void Log_Write_Origin(uint8_t origin_type, const Location &loc);
     void Log_Write_RPM(const AP_RPM &rpm_sensor);
 
-    void Log_Write_QX1Gimbal(float rout,float pout, uint16_t rpwm, uint16_t ppwm);
+    void Log_Write_QX1Gimbal(float ref, float rout,float pout, uint16_t rpwm, uint16_t ppwm);
 
     // This structure provides information on the internal member data of a PID for logging purposes
     struct PID_Info {

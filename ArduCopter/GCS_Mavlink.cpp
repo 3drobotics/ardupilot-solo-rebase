@@ -1131,10 +1131,11 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg)
 #if MOUNT == ENABLED
         mavlink_qx1_gimbal_report_t qx1_report;
         mavlink_msg_qx1_gimbal_report_decode(msg, &qx1_report);
+        float pitch_ref = (float)qx1_report.pitch_ref/(1<<20);
         float roll_out  = (float)qx1_report.roll_out/(1<<20);
         float pitch_out = (float)qx1_report.pitch_out/(1<<20);
         //hal.console->printf("%f %f\n", pitch_out, roll_out);
-        copter.DataFlash.Log_Write_QX1Gimbal(roll_out, pitch_out, qx1_report.roll_pwm, qx1_report.pitch_pwm);
+        copter.DataFlash.Log_Write_QX1Gimbal(pitch_ref, roll_out, pitch_out, qx1_report.roll_pwm, qx1_report.pitch_pwm);
 #endif
         break;
     }
