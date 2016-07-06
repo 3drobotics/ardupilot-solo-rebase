@@ -144,8 +144,8 @@ struct PACKED log_QX1Gimbal {
     float pitch_ref;
     float roll_out;
     float pitch_out;
-    uint16_t roll_pwm;
-    uint16_t pitch_pwm;
+    uint32_t roll_pwm;
+    uint32_t pitch_pwm;
 };
 
 struct PACKED log_RCIN {
@@ -875,7 +875,7 @@ Format characters in the format string for binary log messages
     { LOG_GIMBAL3_MSG, sizeof(log_Gimbal3), \
       "GMB3", "Ihhh", "TimeMS,rl_torque_cmd,el_torque_cmd,az_torque_cmd" }, \
     { LOG_QX1GIMBAL_MSG, sizeof(log_QX1Gimbal), \
-      "QX1", "QfffHH", "TimeUS,pitch_ref,roll_out,pitch_out,roll_pwm,pitch_pwm" }
+      "QX1", "QfffII", "TimeUS,pitch_ref,roll_out,pitch_out,roll_pwm,pitch_pwm" }
 
 // #if SBP_HW_LOGGING
 #define LOG_SBP_STRUCTURES \
