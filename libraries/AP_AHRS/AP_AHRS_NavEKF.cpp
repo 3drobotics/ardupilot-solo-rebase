@@ -318,7 +318,7 @@ bool AP_AHRS_NavEKF::get_position(struct Location &loc) const
     Vector3f ned_pos;
     switch (active_EKF_type()) {
     case EKF_TYPE1:
-        if (EKF1.getLLH(loc) && EKF1.getPosNED(ned_pos)) {
+        if (EKF1.getLLH(loc) && EKF1.getPosD(ned_pos.z)) {
             // fixup altitude using relative position from AHRS home, not
             // EKF origin
             loc.alt = get_home().alt - ned_pos.z*100;
@@ -621,8 +621,15 @@ bool AP_AHRS_NavEKF::get_relative_position_NED(Vector3f &vec) const
         return false;
 
     case EKF_TYPE1:
-    default:
-        return EKF1.getPosNED(vec);
+    default: {
+        Vector2f posNE;
+        float posD;
+        bool position_is_valid = (EKF1.getPosNE(posNE) && EKF1.getPosD(posD));
+        vec.x = posNE.x;
+        vec.y = posNE.y;
+        vec.z = posD;
+        return position_is_valid;
+    }
 
     case EKF_TYPE2:
         return EKF2.getPosNED(-1,vec);
@@ -635,6 +642,70 @@ bool AP_AHRS_NavEKF::get_relative_position_NED(Vector3f &vec) const
         const struct SITL::sitl_fdm &fdm = _sitl->state;
         vec = Vector3f(diff2d.x, diff2d.y,
                        -(fdm.altitude - get_home().alt*0.01f));
+        return true;
+    }
+#endif
+    }
+}
+
+// return a relative ground position in meters/second, North/East
+// order. return true if estimate is valid
+bool AP_AHRS_NavEKF::get_relative_position_NE(Vector2f &posNE) const
+{
+    switch (active_EKF_type()) {
+    case EKF_TYPE_NONE:
+        return false;
+
+    case EKF_TYPE1:
+    default: {
+        bool position_is_valid = EKF1.getPosNE(posNE);
+        return position_is_valid;
+    }
+
+    case EKF_TYPE2: {
+        Vector3f posNED;
+        bool position_is_valid = EKF2.getPosNED(-1,posNED);
+        posNE.x = posNED.x;
+        posNE.y = posNED.y;
+        return position_is_valid;
+    }
+
+#if CONFIG_HAL_BOARD == HAL_BOARD_SITL
+    case EKF_TYPE_SITL: {
+        Location loc;
+        get_position(loc);
+        posNE = location_diff(get_home(), loc);
+        return true;
+    }
+#endif
+    }
+}
+
+// return a relative ground position in meters/second, Down
+// return true if the estimate is valid
+bool AP_AHRS_NavEKF::get_relative_position_D(float &posD) const
+{
+    switch (active_EKF_type()) {
+    case EKF_TYPE_NONE:
+        return false;
+
+    case EKF_TYPE1:
+    default: {
+        bool position_is_valid = EKF1.getPosD(posD);
+        return position_is_valid;
+    }
+
+    case EKF_TYPE2: {
+        Vector3f posNED;
+        bool position_is_valid = EKF2.getPosNED(-1,posNED);
+        posD = posNED.z;
+        return position_is_valid;
+    }
+
+#if CONFIG_HAL_BOARD == HAL_BOARD_SITL
+    case EKF_TYPE_SITL: {
+        const struct SITL::sitl_fdm &fdm = _sitl->state;
+        posD = -(fdm.altitude - get_home().alt*0.01f);
         return true;
     }
 #endif
