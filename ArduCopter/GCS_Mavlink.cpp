@@ -1005,6 +1005,9 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg)
 
     case MAVLINK_MSG_ID_HEARTBEAT:      // MAV ID: 0
     {
+        if(msg->compid == MAV_COMP_ID_GIMBAL || msg->compid == MAV_COMP_ID_QX1_GIMBAL) {
+            copter.mount_compid = msg->compid;
+        }
         // We keep track of the last time we received a heartbeat from our GCS for failsafe purposes
         if(msg->sysid != copter.g.sysid_my_gcs) break;
         copter.failsafe.last_heartbeat_ms = AP_HAL::millis();

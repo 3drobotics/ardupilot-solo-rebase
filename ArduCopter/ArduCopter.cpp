@@ -346,7 +346,7 @@ void Copter::update_mount()
 {
 #if MOUNT == ENABLED
     // update camera mount's position
-    camera_mount.update();
+    camera_mount.update(mount_compid, serial_manager);
 #endif
 }
 
