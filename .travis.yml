@@ -2,9 +2,8 @@ language: cpp
 sudo: false
 cache:
   directories:
-  - "$HOME/opt"
-  - "$HOME/.ccache"
-
+  - $HOME/opt
+  - $HOME/.ccache
 addons:
   apt:
     sources:
@@ -20,7 +19,6 @@ addons:
     - python-empy
     - python-serial
     - zlib1g-dev
-
 before_install:
 - pushd $HOME
 - pushd $HOME/opt
@@ -32,7 +30,6 @@ before_install:
   && if grep -Fxq "$exportline" ~/.profile; then echo nothing to do ; else echo $exportline
   >> ~/.profile; fi && . ~/.profile
 - popd
-
 before_script:
 - mkdir -p $HOME/ccache-bin
 - ln -s /usr/bin/ccache ~/bin/g++-4.8
@@ -47,24 +44,21 @@ before_script:
 - ln -s /usr/bin/ccache ~/bin/arm-linux-gnueabihf-gcc
 - ln -s /usr/bin/ccache ~/bin/arm-linux-gnueabihf-size
 - ln -s /usr/bin/ccache ~/bin/arm-linux-gnueabihf-objcopy
-
 script:
 - pushd ArduCopter
 - make px4-v2-solo -j8
 - popd
-
 before_deploy:
 - mkdir $HOME/deploy_files
 - cp ArduCopter/ArduCopter-v2.px4 $HOME/deploy_files
 - cp modules/PX4Firmware/Build/px4fmu-v2_APM.build/firmware.elf $HOME/deploy_files/fmu.elf
 - cp modules/PX4Firmware/Build/px4io-v2_default.build/firmware.elf $HOME/deploy_files/io.elf
-
 deploy:
   provider: releases
-  api_key: "$GITHUB_DEPLOY_API_KEY"
-  file:
-  - "$HOME/deploy_files/ArduCopter-v2.px4"
-  - "$HOME/deploy_files/fmu.elf"
-  - "$HOME/deploy_files/io.elf"
+  api_key:
+    secure: iOR28S7iqYzD35k7Gs1o445JPRxfzrtxiKqzFDR+l1WLF/vbF2lfdUugLnJ3N0e7ftrABRZW12LtfvxxYIzgshL1AUnNVq7LRCyxIqVu7YqJw1Qs6HX6K2OVlS/Ke83/aMnHpsC3MLryZ/6gpc0zO56i9tx1t+ZvPZQRjRhSYwE8wDk0UEJ0fZ2tGDQ7UNjQFxriYpOH/5P+wazlmCisgE45CIaCH03z/0yr7c8kpElsksksVb+UVKi5tQ86sGwL+09LlslDGRhTb008FaQ9jbtERcYB9/f29catWOmQbKt8Z5I10IaJ0onFnbtxv07JfnjcB3Hv4nt7uYV61Srze4rBBn10UJ3GpWCWV1nRjCLXmr2BW+8kiTkRPM8CXEZm7avGFyjn4zi/3MKWWAb0hJ5AWRCQ5KJWD9c9tGTyLy253xqoqdEM16GXfsuk2mt8VurFhqPT039m4m8rAj3j3WP3EedWkHqk9pT73pVVKB1Ua5ry1EJr/po3LsBUmhOIIGZU38irAiC4Xwa9Samo+vV4TaxRn4FX8/dJWhSJVfo0GlRnSUN0OZW6upl3nJTPttLX9kVMOetQyc7B+d1QGxALjKTffznm2DM3sOXde5sacIa4logyYK/5JkhQkuRVxDjuVE4vOZNCfIOaO1LyYLVpHPet/yE7pfl3jkoBfhE=
+  file: 'ArduCopter/ArduCopter-v2.px4'
+  skip_cleanup: true
   on:
+    repo: 3drobotics/ardupilot-solo-rebase
     tags: true
