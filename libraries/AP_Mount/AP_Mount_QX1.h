@@ -79,7 +79,7 @@ private:
     RC_Channel_aux::Aux_servo_function_t    _open_idx;  // RC_Channel_aux mount open function index
 
     Vector3f _angle_bf_output_deg;  // final body frame output angle in degrees
-
+    bool neutral;
     uint32_t _last_check_servo_map_ms;  // system time of latest call to check_servo_map function
 };
 

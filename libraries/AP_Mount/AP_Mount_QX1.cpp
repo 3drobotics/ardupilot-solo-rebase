@@ -118,6 +118,10 @@ void AP_Mount_QX1::gmb_att_update()
 
     // if mount is not in neutral mode, send copter attitude for pointing
     if (get_mode() != MAV_MOUNT_MODE_NEUTRAL) {
+        if (neutral) {
+            printf("switched out of neutral\n");
+            neutral = false;
+        }
         mavlink_msg_attitude_send(chan,
                                   AP_HAL::millis(),
                                   euler312.x,            //these will be normalised again on gimbal
@@ -127,6 +131,10 @@ void AP_Mount_QX1::gmb_att_update()
                                   gyro.y,
                                   gyro.z);
     } else { // if mount is in neutral mode, send 0 attitude to stabilize the gimbal straight ahead
+        if (!neutral) {
+            printf("switched into neutral\n");
+            neutral = true;
+        }
         mavlink_msg_attitude_send(chan,
                                   AP_HAL::millis(),
                                   0,
