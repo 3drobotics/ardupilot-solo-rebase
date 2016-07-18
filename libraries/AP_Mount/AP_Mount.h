@@ -73,6 +73,13 @@ public:
         Mount_Type_SToRM32_serial = 5   /// SToRM32 mount using custom serial protocol
     };
 
+    enum MountDetectEvent {
+        MOUNT_EVENT_QX1,
+        MOUNT_EVENT_SOLO,
+        MOUNT_EVENT_NONE,
+        MOUNT_TRY_QX1,
+        MOUNT_TRY_SOLO
+    };
     // Constructor
     AP_Mount(const AP_AHRS_TYPE &ahrs, const struct Location &current_loc);
 
@@ -155,6 +162,8 @@ protected:
     uint8_t             _num_instances;     // number of mounts instantiated
     uint8_t             _primary;           // primary mount
     AP_Mount_Backend    *_backends[AP_MOUNT_MAX_INSTANCES];         // pointers to instantiated mounts
+
+    void Log_Write_Gimbal_Event(uint8_t id);
 
     // mavlink detect vars
     uint8_t             _retries;

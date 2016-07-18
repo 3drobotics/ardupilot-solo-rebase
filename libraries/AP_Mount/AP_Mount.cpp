@@ -478,6 +478,16 @@ void AP_Mount::init(DataFlash_Class *dataflash, const AP_SerialManager& serial_m
     }
 }
 
+void AP_Mount::Log_Write_Gimbal_Event(uint8_t id)
+{
+    struct log_Gimbal_Event pkt = {
+        LOG_PACKET_HEADER_INIT(LOG_GMBE_MSG),
+        time_ms     : AP_HAL::millis(),
+        id        : id
+    };
+    _dataflash->WriteBlock(&pkt, sizeof(pkt));
+}
+
 // update - give mount opportunity to update servos.  should be called at 10hz or higher
 void AP_Mount::update(uint8_t mount_compid,  AP_SerialManager& serial_manager)
 {
@@ -498,11 +508,15 @@ void AP_Mount::update(uint8_t mount_compid,  AP_SerialManager& serial_manager)
                 _backends[instance] = new AP_Mount_SoloGimbal(*this, state[instance], instance);
                 _num_instances++;
                 _mav_gimbal_found = true;
+                GCS_MAVLINK::send_statustext(MAV_SEVERITY_INFO, 0xFF, "Detected Solo Gimbal!!\n");
+                Log_Write_Gimbal_Event(MOUNT_EVENT_SOLO);
             }
             if (mount_compid == MAV_COMP_ID_QX1_GIMBAL) {
                 _backends[instance] = new AP_Mount_QX1(*this, state[instance], instance);
                 _num_instances++;
                 _mav_gimbal_found = true;
+                GCS_MAVLINK::send_statustext(MAV_SEVERITY_INFO, 0xFF, "Detected QX1 Gimbal!!\n");
+                Log_Write_Gimbal_Event(MOUNT_EVENT_QX1);
             }
             // init new instance
             if (_backends[instance] != NULL && _mav_gimbal_found) {
@@ -514,17 +528,19 @@ void AP_Mount::update(uint8_t mount_compid,  AP_SerialManager& serial_manager)
             } else if(_timeout) {
                 //change baud rate of gimbal port and retry
                 if(baud == 921600) {
-                    hal.console->printf("Looking for R10C Gimbal!!\n");
+                    GCS_MAVLINK::send_statustext(MAV_SEVERITY_INFO, 0xFF, "Looking for R10C Gimbal!!\n");
                     uart->end();
                     baud = 230400;
+                    Log_Write_Gimbal_Event(MOUNT_TRY_QX1);
                 } else if(baud == 230400) {
-                    hal.console->printf("Looking for Solo Gimbal!!\n");
+                    GCS_MAVLINK::send_statustext(MAV_SEVERITY_INFO, 0xFF, "Looking for Solo Gimbal!!\n");
                     uart->end();
                     baud = 921600;
+                    Log_Write_Gimbal_Event(MOUNT_TRY_QX1);
                 } else {
-                    hal.console->printf("Setting Back to Default Baud: %d!!\n", 921600);
+                    GCS_MAVLINK::send_statustext(MAV_SEVERITY_INFO, 0xFF, "Setting Back to Default Baud: 230400!!\n");
                     uart->end();
-                    baud = 921600;
+                    baud = 230400;
                 }
 
                 _timeout = false;
@@ -532,7 +548,8 @@ void AP_Mount::update(uint8_t mount_compid,  AP_SerialManager& serial_manager)
                 _last_time = AP_HAL::millis();
                 _retries++;
                 if(_retries == MAX_RETRIES) {
-                    hal.console->printf("No MavLink Gimbal Found!!\n");
+                    GCS_MAVLINK::send_statustext(MAV_SEVERITY_CRITICAL, 0xFF, "No MavLink Gimbal Found!!\n");
+                    Log_Write_Gimbal_Event(MOUNT_EVENT_NONE);
                 }
             } else {
                 if(begin_gmb_uart && ((AP_HAL::millis() - _last_time)>=1000)) {
