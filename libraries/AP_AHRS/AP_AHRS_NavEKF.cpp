@@ -623,7 +623,7 @@ bool AP_AHRS_NavEKF::get_relative_position_NED(Vector3f &vec) const
     case EKF_TYPE1:
     default: {
         Vector2f posNE;
-        float posD;
+        float posD = 0;
         bool position_is_valid = (EKF1.getPosNE(posNE) && EKF1.getPosD(posD));
         vec.x = posNE.x;
         vec.y = posNE.y;
