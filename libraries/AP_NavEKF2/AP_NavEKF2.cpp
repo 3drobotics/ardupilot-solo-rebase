@@ -22,8 +22,7 @@
 #define ABIAS_PNOISE_DEFAULT      3.0E-05f
 #define MAG_BODY_PNOISE_DEFAULT   1.25E-03f
 #define MAG_EARTH_PNOISE_DEFAULT  2.5E-03f
-#define VEL_GATE_DEFAULT          300
-#define POS_GATE_DEFAULT          300
+#define VEL_GATE_DEFAULT          500
 #define GLITCH_RADIUS_DEFAULT     25
 #define FLOW_MEAS_DELAY           10
 #define FLOW_NOISE_DEFAULT        0.25f
@@ -38,6 +37,7 @@
 #define ALT_NOISE_DEFAULT         2.0f
 #define HGT_GATE_DEFAULT          300
 #define MAG_GATE_DEFAULT          300
+#define POS_GATE_DEFAULT          1000
 
 #elif APM_BUILD_TYPE(APM_BUILD_ArduPlane)
 // plane-specific defaults
@@ -46,6 +46,7 @@
 #define ALT_NOISE_DEFAULT         1.0f
 #define HGT_GATE_DEFAULT          400
 #define MAG_GATE_DEFAULT          200
+#define POS_GATE_DEFAULT          3000
 
 #else
 // copter-specific defaults
@@ -54,6 +55,7 @@
 #define ALT_NOISE_DEFAULT         2.0f
 #define HGT_GATE_DEFAULT          300
 #define MAG_GATE_DEFAULT          300
+#define POS_GATE_DEFAULT          1000
 
 #endif // APM_BUILD_DIRECTORY
 

@@ -35,5 +35,13 @@ float NavEKF2_core::InitialGyroBiasUncertainty(void) const
     return 2.5f;
 }
 
+/*
+ * vehicle specific initial gyro scale factor uncertainty in percent
+ */
+float NavEKF2_core::InitialGyroScaleUncertaintyPct(void) const
+{
+    return 0.5f;
+}
+
 
 #endif // HAL_CPU_CLASS

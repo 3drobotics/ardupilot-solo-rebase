@@ -254,18 +254,14 @@ void NavEKF2_core::readIMUData()
     // Get current time stamp
     imuDataNew.time_ms = imuSampleTime_ms;
 
-    // remove gyro scale factor errors
-    imuDataNew.delAng.x = imuDataNew.delAng.x * stateStruct.gyro_scale.x;
-    imuDataNew.delAng.y = imuDataNew.delAng.y * stateStruct.gyro_scale.y;
-    imuDataNew.delAng.z = imuDataNew.delAng.z * stateStruct.gyro_scale.z;
-
-    // remove sensor bias errors
-    imuDataNew.delAng -= stateStruct.gyro_bias * (imuDataNew.delAngDT / dtEkfAvg);
-    imuDataNew.delVel.z -= stateStruct.accel_zbias * (imuDataNew.delVelDT / dtEkfAvg);
-
     // Accumulate the measurement time interval for the delta velocity and angle data
     imuDataDownSampledNew.delAngDT += imuDataNew.delAngDT;
     imuDataDownSampledNew.delVelDT += imuDataNew.delVelDT;
+
+    // Rotate the delta velocity back to the frame at the start of the accumulation period
+    Matrix3f deltaRotMat;
+    imuQuatDownSampleNew.rotation_matrix(deltaRotMat);
+    Vector3f deltaVel1 = deltaRotMat*imuDataNew.delVel;
 
     // Rotate quaternon atitude from previous to new and normalise.
     // Accumulation using quaternions prevents introduction of coning errors due to downsampling
@@ -274,14 +270,14 @@ void NavEKF2_core::readIMUData()
     imuQuatDownSampleNew = imuQuatDownSampleNew*deltaQuat;
     imuQuatDownSampleNew.normalize();
 
-    // Rotate the accumulated delta velocity into the new frame of reference created by the latest delta angle
-    // This prevents introduction of sculling errors due to downsampling
-    Matrix3f deltaRotMat;
-    deltaQuat.inverse().rotation_matrix(deltaRotMat);
-    imuDataDownSampledNew.delVel = deltaRotMat*imuDataDownSampledNew.delVel;
+    // Rotate the delta velocity back to the frame at the start of the accumulation period
+    imuQuatDownSampleNew.rotation_matrix(deltaRotMat);
+    Vector3f deltaVel2 = deltaRotMat*imuDataNew.delVel;
 
-    // accumulate the latest delta velocity
-    imuDataDownSampledNew.delVel += imuDataNew.delVel;
+    // take the average from the before and after the delta angle rotation and accumulate
+    // NOTE: when using this down sampled data in the INS calculations, the delta velocities MUST be rotated using
+    // the quaternion BEFORE the delta angle rotation is applied
+    imuDataDownSampledNew.delVel += (deltaVel1 + deltaVel2) * 0.5f;
 
     // Keep track of the number of IMU frames since the last state prediction
     framesSincePredict++;
@@ -423,12 +419,7 @@ void NavEKF2_core::readGpsData()
             }
 
             // Commence GPS aiding when able to
-            if (readyToUseGPS() && PV_AidingMode != AID_ABSOLUTE) {
-                PV_AidingMode = AID_ABSOLUTE;
-                // Initialise EKF position and velocity states to last GPS measurement
-                ResetPosition();
-                ResetVelocity();
-            }
+            setAidingMode();
 
         } else {
             // report GPS fix status
@@ -464,7 +455,7 @@ void NavEKF2_core::readGpsData()
             if (optFlowBackupAvailable) {
                 // we can do optical flow only nav
                 frontend->_fusionModeGPS = 3;
-                PV_AidingMode = AID_RELATIVE;
+                setAidingMode();
             } else {
                 // store the current position
                 lastKnownPositionNE.x = stateStruct.position.x;

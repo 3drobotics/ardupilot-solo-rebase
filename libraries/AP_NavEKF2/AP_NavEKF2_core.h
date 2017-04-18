@@ -31,6 +31,7 @@
 #include <stdio.h>
 #include <AP_Math/vectorN.h>
 #include <AP_NavEKF2/AP_NavEKF2_Buffer.h>
+#include "ekf_defines.h"
 
 // GPS pre-flight check bit locations
 #define MASK_GPS_NSATS      (1<<0)
@@ -627,7 +628,7 @@ private:
     Vector28 Kfusion;               // Kalman gain vector
     Matrix24 KH;                    // intermediate result used for covariance updates
     Matrix24 KHP;                   // intermediate result used for covariance updates
-    Matrix24 P;                     // covariance matrix
+    float P[EKF_NUM_STATES][EKF_NUM_STATES];                     // covariance matrix
     imu_ring_buffer_t<imu_elements> storedIMU;      // IMU data buffer
     obs_ring_buffer_t<gps_elements> storedGPS;      // GPS data buffer
     obs_ring_buffer_t<mag_elements> storedMag;      // Magnetometer data buffer
@@ -682,12 +683,9 @@ private:
     uint32_t lastHealthyMagTime_ms; // time the magnetometer was last declared healthy
     bool allMagSensorsFailed;       // true if all magnetometer sensors have timed out on this flight and we are no longer using magnetometer data
     uint32_t ekfStartTime_ms;       // time the EKF was started (msec)
-    Matrix24 nextP;                 // Predicted covariance matrix before addition of process noise to diagonals
+    float subx[EKF_MAX_NUM_SUBX];   // intermediate variables for computation
+    float nextP[EKF_NUM_STATES][EKF_NUM_STATES]; // storage for updated/predicted covariance matrix
     Vector24 processNoise;          // process noise added to diagonals of predicted covariance matrix
-    Vector25 SF;                    // intermediate variables used to calculate predicted covariance matrix
-    Vector5 SG;                     // intermediate variables used to calculate predicted covariance matrix
-    Vector10 SQ;                    // intermediate variables used to calculate predicted covariance matrix
-    Vector23 SPP;                   // intermediate variables used to calculate predicted covariance matrix
     Vector2f lastKnownPositionNE;   // last known position
     uint32_t lastDecayTime_ms;      // time of last decay of GPS position offset
     float velTestRatio;             // sum of squares of GPS velocity innovation divided by fail threshold
@@ -772,6 +770,10 @@ private:
     float posDownObsNoise;          // observation noise on the vertical position used by the state and covariance update step (m)
     float referenceYawAngle;        // Euler yaw angle measured at takeoff and after a yaw reset (rad)
     float posdAtLastYawReset;       // Verticl position at last height reset (m)
+    float magDecAng;                // Magnetic declination angle used by the filter (rad)
+    float filtYawRate;              // filtered yaw rate used to activate rapid yaw protection (rad/sec)
+    float lastLearnedDecl;          // last value of declination learned (rad)
+    float declObsVar;               // variance of the magentic declination observation (rad)^2
 
     // variables used to calulate a vertical velocity that is kinematically consistent with the verical position
     float posDownDerivative;        // Rate of chage of vertical position (dPosD/dt) in m/s. This is the first time derivative of PosD.
@@ -931,6 +933,9 @@ private:
 
     // vehicle specific initial gyro bias uncertainty
     float InitialGyroBiasUncertainty(void) const;
+
+    // vehicle specific initial gyro scale uncertainty (percent)
+    float InitialGyroScaleUncertaintyPct(void) const;
 };
 
 #endif // AP_NavEKF2_core

@@ -124,6 +124,10 @@ void NavEKF2_core::setAidingMode()
             // We have commenced aiding, but GPS useage has been prohibited so use optical flow only
             hal.console->printf("EKF2 IMU%u is using optical flow\n",(unsigned)imu_index);
             PV_AidingMode = AID_RELATIVE; // we have optical flow data and can estimate all vehicle states
+            // initialize scale factor variance
+            P[12][12] = sq(InitialGyroScaleUncertaintyPct()*1.0e-2f);
+            P[13][13] = P[12][12];
+            P[14][14] = P[12][12];
             posTimeout = true;
             velTimeout = true;
             // Reset the last valid flow measurement time
@@ -134,6 +138,10 @@ void NavEKF2_core::setAidingMode()
             // We have commenced aiding and GPS useage is allowed
             hal.console->printf("EKF2 IMU%u is using GPS\n",(unsigned)imu_index);
             PV_AidingMode = AID_ABSOLUTE; // we have GPS data and can estimate all vehicle states
+            // initialize scale factor variance
+            P[12][12] = sq(InitialGyroScaleUncertaintyPct()*1.0e-2f);
+            P[13][13] = P[12][12];
+            P[14][14] = P[12][12];
             posTimeout = false;
             velTimeout = false;
             // we need to reset the GPS timers to prevent GPS timeout logic being invoked on entry into GPS aiding
@@ -143,10 +151,9 @@ void NavEKF2_core::setAidingMode()
             // reset the last valid position fix time to prevent unwanted activation of GPS glitch logic
             lastPosPassTime_ms = imuSampleTime_ms;
         }
-        // Reset all position, velocity and covariance
+        // Reset all position and velocity states
         ResetVelocity();
         ResetPosition();
-        CovarianceInit();
 
     }
 
